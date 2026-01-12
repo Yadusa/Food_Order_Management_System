@@ -1,0 +1,30 @@
+001, Burger, 8.00
+002, Pizza, 12.00
+003, Nasi Lemak, 5.00
+004, Maggi Goreng, 6.50
+005, Nasi Goreng, 4.50
+006, Roti Canai, 2.50
+007, Biriyani, 8.50
+008, Ayam Masak Merah, 8.60
+009, Tosai, 2.50
+010, Mee Rojak, 7.50
+011, Roti Telur, 3.50
+012, Bihun sup, 9.00
+013, Nasi Goreng Ayam, 11.00
+014, Kuey Teow Sup, 9.00
+015, Nasi Goreng Kampung, 8.80
+016, Nasi Putih, 2.50
+017, Mee Bandung, 10.00
+018, Mee Kungfu, 10.00
+019,Tea O Ais, 3.00
+020, Tea O Panas, 2.50
+021, Tea Ais, 3.50
+022, Kopi Ais, 4.00
+023, Kopi O Ais, 3.50
+024, Milo Panas, 4.00
+025, Nescafe O Panas, 3.00
+026, Neslo Panas, 4.00
+027,Horlicks Ais, 5.00
+028, Susu Ais, 3.50
+029, Limau Ais, 3.50
+030, Limau Panas,3.50

@@ -1,103 +1,156 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <string>
+#include <sstream>
+#include <iomainip>
+#include <cctype> // for toupper()
+#include <windows.h>
+#include <stdexcept> // for try catch()
+#include <map>
+
 
 using namespace std;
 
-struct orderItems
+struct menuItem
 {
-    int id;
-    string name;
-    double price;
-};
+    int menuId;
+    string menuName;
+    float menuPrice;
+    menuItem* next;
 
-struct Node
-{
-    Order data;
-    Node* next;
 }
 
+menuItem* itemHead = NULL;
+
+struct orderItems
+{
+    int orderId;
+    string ordeName;
+    double orderPrice;
+    int orderQuantity;
+    float total;
+    OrderItem* next;
+};
+
+orderItem* itemHead = NULL;
+
+//declaration of sorting functions
+void bubbleSortByPrice(menuItem*& head);
+void bubbleSortByName(menuItem*& head);
+void displaySalesReport();
+void OrderMenu();
+
+
+//Base class
 class User
 {
     protected:
-       string username;
-       string password;
-
-    public:
-      User() { username = " "; password = " ";}
-      virtual void login() = 0;
-      virtual ~User() {};
-};
-
-class Customer : public User {
-    private: 
-       Node* head;
+        string  id,username, password;
     public: 
-       Customer() : head(NULL) {}
+       user(string id = "", string username = "", string password = "")
+       : id(id), username(username), password(password) {}
 
-    void search(int id)
-    {
-        Node* current = head;
-        while* (current != NULL) {
-            if (current-> data.ID == id)
-            {
-            cout << "Order Found: " << current-> data.name << endl;
-            return;
-            }
-            current = current -> next;
-        }
-        cout << "Order ID not found." << endl;      
+       string getUsername() const{
+        return username;
+       }
 
-    }
+       string getId() const {
+        return id;
+       }
+    
+    virtual voi login() = 0; 
+    virtual ~User() {}
 };
+
+class Menu{
+
+    public: 
+      Menu()
+      {
+        itemHead = NULL;
+        ifstream file(menu.txt);
+
+        if(!file.is.open()){
+            cout << "No menu.txt found"c<< endl;
+            return;
+        }
+        
+        // converting to string 
+        string line;
+        while(getline(file, line)) {
+            stringstream ss(line); // slipt line commas
+            string idStr,name, priceStr;
+
+            getline(ss, idStr, ',');
+            getline(ss, name, ',');
+            getline(ss, price, ',');
+
+            // convert back to int and float
+            int id = stoi(idStr);
+            float price = stof(priceStr);
+
+            menuItem* newItem = new menuItem;
+            newItem -> id =id;
+            newItem -> name = name;
+            newItem -> price = price;
+            newItem -> next = NULL;
+
+            if (itemHead == NULL)
+            {
+                itemHead = newItem;
+            }
+            else 
+            {
+                menuItem* current = itemHead;
+                while(current -> next != NULL)
+                {
+                    current = current -> next;
+                }
+                current -> next = newItem;
+            }
+        }
+        file.close();
+      }
+      
+}
 
 int main()
 {
     int choice;
-    Customer customerSel;
 
     while (true)
     {
-        cout << "============================" << endl;
-        cout << "     WELCOME TO KARABU      " << endl;
-        cout << "============================" << endl;
-        cout << "1. LOGIN    " << endl;
-        cout << "2. REGISTER " << endl;
-        cout << "3. ADMIN    " << endl;
-        cout << "4. STAFF    " << endl;
-        cout << "1. EXIT     " << endl;
+        cout << "==================================================" << endl;
+        cout << "     WELCOME TO KARABU FOOD ORDERING SYSTEM       " << endl;
+        cout << "==================================================" << endl;
+        cout << "                    1. CUSTOMER                   " << endl;
+        cout << "                    2. ADMIN                      " << endl;
+        cout << "                    3. EXIT                       " << endl;
         cout << "Please enter your selection: ";
 
         try{
-           
-            if( cin >> choice)
+
+            if(!(cin >> choice) )
             {
                 throw "Invalid selection! Please re-enter your selection:";
             }
 
             if(choice == 1)
             {
-                customerSel.login();
+                customer.login();
             }
             else if(choice == 2)
             {
-                customerSel.register();
+                admin.login();
             }
             else if(choice == 3)
-            {
-                cout << amdin.login();
-            }
-            else if(choice == 4)
-            {
-                cout << staff.login();
-            }
-            else if(choice == 5)
             {
                 cout << "Exiting system. Thank you for using KARABU!" << endl;
             }
             else
             {
-                cout << "Selectipn not available. Please re-enter your selection: " << endl;
+                cout << "Invalid selection. Please re-enter your selection: " << endl;
 
             }
         }
@@ -105,11 +158,11 @@ int main()
         {
             cout << "Error: " << error << endl;
             cin.clear();
-            cin.ignore(100, '\n');
+            cin.ignore(10000, '\n');
         }
-        cout << endl;
+        cout << "Exiting program..." << endl;
     }
-    return 0;
+    cout << "Exiting program..." << endl;
 }
 
 
