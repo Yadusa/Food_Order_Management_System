@@ -63,7 +63,8 @@ class User
     virtual ~User() {}
 };
 
-class Menu{
+class Menu
+{
 
     public: 
       Menu()
@@ -460,6 +461,14 @@ class Customer: public User
         friend void bubbleSortByPrice(menuItem*&);
         friend voif bubbleSortByName(menuItem*&);
 };
+
+void customerMenu(Customer& customer)
+{
+    string choice;
+    MenuItem menuItem;
+    OrderItem orderItem;
+    order* sessionOrderHead = NULL;
+}
 
 
 int main()
