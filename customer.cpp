@@ -320,7 +320,7 @@ class Menu{
 
         while(current !NULL)
         {
-            if(cuurent -> menuId == id)
+            if(curent -> menuId == id)
             {
                 current -> menuName = name;
                 current -> menuPrice = price;
@@ -382,9 +382,85 @@ class Menu{
         return false;
       }
 
-      void 
+      void getNewMenuItem()
+      {
+        int id;
+        string name;
+        float price;
 
-}
+        cout << "Enter Menu Id: ";
+        cin >> id;
+
+        if(ExistId(id))
+        {
+            cout << "Menu Id already exist!" << endl;
+            return;
+        }
+
+        cout << "Enter Menu Name: ";
+        cin.ignore();
+        getline(cin, name);
+        
+        cout << "Enter Menu Price: ";
+        cin >> price;
+
+        addMenu(id, title, price);
+        cout << "Menu item added successfully! " << endl;
+      }
+
+      void getEditMenuItem()
+      {
+        int id;
+        string newName;
+        float newPrice;
+
+        cout << "Enter Menu ID to edit: ";
+        cin >> id;
+
+        if(!ExistId(id))
+        {
+            cout << "Menu Item not foun! " << endl;
+            return;
+        }
+
+        cout << "Enter new Name: ";
+        cin.ignore();
+        getline(cin, newName);
+
+        cout << "Enter new Price: ";
+        cin >> newPrice;
+
+        editMenu(id, newName, newPrice);
+      }
+
+      void getdelMenuItem()
+      {
+        int id;
+        cout << "Enter Menu Item to delete: ";
+        cin >> id; 
+        deleteMenu(id);
+      }
+};
+
+class Customer: public User
+{
+    public: 
+       Customer(string id= " ", string username = " ", string password = " ")
+       : User(id, username, password)
+       {
+        if (!id.empty())
+        {
+            cout << "\n Logging out customer: " << getUsername() << endl;
+            cout << "Thank you for choosing KARABU!" << endl;
+            cout << "Press enter to continue...";
+            cin.get();
+        }
+       }
+
+        friend void bubbleSortByPrice(menuItem*&);
+        friend voif bubbleSortByName(menuItem*&);
+};
+
 
 int main()
 {
