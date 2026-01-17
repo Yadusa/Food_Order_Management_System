@@ -578,7 +578,7 @@ void adminMenu() {
         system("cls");
         cout << "\n===== ADMIN MENU =====\n";
         cout << "1. Food & Drink\n";
-        cout << "2. Search Menu (by ID or Name)\n";
+        cout << "2. Search Menu\n";
         cout << "3. Manage Admin\n";
         cout << "0. Logout\n";
         cout << "\nChoice: ";
