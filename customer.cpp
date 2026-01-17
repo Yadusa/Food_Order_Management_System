@@ -23,7 +23,7 @@ struct menuItem
 
 menuItem* itemHead = NULL;
 
-struct orderItems
+struct orderItem
 {
     int orderId;
     string ordeName;
@@ -465,9 +465,43 @@ class Customer: public User
 void customerMenu(Customer& customer)
 {
     string choice;
-    MenuItem menuItem;
-    OrderItem orderItem;
+    MenuItem menuItems;
+    OrderItem orderItems;
     order* sessionOrderHead = NULL;
+    
+    do
+    {
+        system("cls");
+        cout << "--------------------------------------------------------------" << endl;
+        cout << "|       \t\t Wlcome, " << customer.getUsername() << "  \t\t  |" << endl; 
+        cout << "--------------------------------------------------------------" << endl;
+        cout << "                              CUSTOMER MENU                   " << endl;
+        cout << "--------------------------------------------------------------" << endl;
+        cout << "                             1. View Menu                     " << endl;
+        cout << "                             2. Order Now                     " << endl;
+        cout << "                             3. Search Dish                   " << endl;
+        cout << "                             4. Sort Menu                     " << endl;
+        cout << "                             5. Export Order Summary          " << endl;
+        cout << "                             6. View order Summary            " << endl;
+        cout << "                             0. Logout                        " << endl;
+        cout << "--------------------------------------------------------------" << endl;
+        cout << "\n ENter your choice";
+        geline(cin, choice);
+
+        if(choice == "1")
+        {
+            menuItems.displayMenu();
+            cout << "Press Enter to continue";
+            cin.get();
+        }
+        else if (choice == "2")
+        {
+            
+        }
+        
+
+
+    }
 }
 
 
