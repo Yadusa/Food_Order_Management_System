@@ -1,30 +1,30 @@
-30, Limau Panas, 3.5
-29, Limau Ais, 3.5
-28, Susu Ais, 3.5
-27, Horlicks Ais, 5
-26, Neslo Panas, 4
-25, Nescafe O Panas, 3
-24, Milo Panas, 4
-23, Kopi O Ais, 3.5
-22, Kopi Ais, 4
-21, Tea Ais, 3.5
-20, Tea O Panas, 2.5
-19, Tea O Ais, 3
-18, Mee Kungfu, 10
-17, Mee Bandung, 10
-16, Nasi Putih, 2.5
-15, Nasi Goreng Kampung, 8.8
-14, Kuey Teow Sup, 9
-13, Nasi Goreng Ayam, 11
-12, Bihun sup, 9
-11, Roti Telur, 3.5
-10, Mee Rojak, 7.5
-9, Tosai, 2.5
-8, Ayam Masak Merah, 8.6
-7, Biriyani, 8.5
-6, Roti Canai, 2.5
-5, Nasi Goreng, 4.5
-4, Maggi Goreng, 6.5
-3, Nasi Lemak, 5
-2, Pizza, 12
 1, Nasi Lemak, 9
+2, Pizza, 12
+3, Nasi Lemak, 5
+4, Maggi Goreng, 6.5
+5, Nasi Goreng, 4.5
+6, Roti Canai, 2.5
+7, Biriyani, 8.5
+8, Ayam Masak Merah, 8.6
+9, Tosai, 2.5
+10, Mee Rojak, 7.5
+11, Roti Telur, 3.5
+12, Bihun sup, 9
+13, Nasi Goreng Ayam, 11
+14, Kuey Teow Sup, 9
+15, Nasi Goreng Kampung, 8.8
+16, Nasi Putih, 2.5
+17, Mee Bandung, 10
+18, Mee Kungfu, 10
+19, Tea O Ais, 3
+20, Tea O Panas, 2.5
+21, Tea Ais, 3.5
+22, Kopi Ais, 4
+23, Kopi O Ais, 3.5
+24, Milo Panas, 4
+25, Nescafe O Panas, 3
+26, Neslo Panas, 4
+27, Horlicks Ais, 5
+28, Susu Ais, 3.5
+29, Limau Ais, 3.5
+30, Limau Panas, 3.5

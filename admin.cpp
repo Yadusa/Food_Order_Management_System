@@ -114,9 +114,9 @@ void loadFoodFromFile() {
         string idStr, nameStr, priceStr;
         Food f;
 
-        if (!getline(ss, idStr, ',')) continue;
-        if (!getline(ss, nameStr, ',')) continue;
-        if (!getline(ss, priceStr, ',')) continue;
+        getline(ss, idStr, ',');
+        getline(ss, nameStr, ',');
+        getline(ss, priceStr, ',');
 
         while (!nameStr.empty() && nameStr[0] == ' ') nameStr.erase(0,1);
         while (!priceStr.empty() && priceStr[0] == ' ') priceStr.erase(0,1);
@@ -137,15 +137,16 @@ void saveFoodToMenu() {
     ofstream out("menu.txt");
     FoodNode* temp = foodHead;
     while (temp) {
-        out << temp->data.foodID << ", " 
-            << temp->data.name << ", " 
+        out << temp->data.foodID << ", "
+            << temp->data.name << ", "
             << temp->data.price << endl;
         temp = temp->next;
     }
     out.close();
 }
 
-void displayFood() {
+/* ===== NORMAL DISPLAY (FOR ADD / EDIT / DELETE) ===== */
+void displayFoodSimple() {
     FoodNode* temp = foodHead;
     if (!temp) {
         cout << "No food records found.\n";
@@ -162,6 +163,96 @@ void displayFood() {
     cout << endl;
 }
 
+/* ===== HELPER: COPY LIST FOR DISPLAY SORT ===== */
+FoodNode* copyFoodList() {
+    if (!foodHead) return NULL;
+
+    FoodNode* newHead = NULL;
+    FoodNode* tail = NULL;
+    FoodNode* temp = foodHead;
+
+    while (temp) {
+        FoodNode* newNode = new FoodNode;
+        newNode->data = temp->data;
+        newNode->next = NULL;
+
+        if (!newHead) {
+            newHead = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+        temp = temp->next;
+    }
+    return newHead;
+}
+
+/* ===== DISPLAY FOOD WITH SORT MENU (ONLY FOR OPTION 4) ===== */
+void displayFood() {
+    if (!foodHead) {
+        cout << "No food records found.\n";
+        return;
+    }
+
+    system("cls");
+
+    cout << "\n=== DISPLAY FOOD / DRINK ===\n";
+    cout << "1. Default sort\n";
+    cout << "2. Sort by price\n";
+    cout << "3. Sort by name\n";
+    cout << "Choice: ";
+
+    int choice;
+    cin >> choice;
+    cin.ignore();
+
+    FoodNode* temp = copyFoodList();
+    FoodNode* i;
+    FoodNode* j;
+
+    if (choice == 2) { // Sort by price
+        for (i = temp; i != NULL; i = i->next) {
+            for (j = i->next; j != NULL; j = j->next) {
+                if (i->data.price > j->data.price) {
+                    Food tempData = i->data;
+                    i->data = j->data;
+                    j->data = tempData;
+                }
+            }
+        }
+    }
+    else if (choice == 3) { // Sort by name
+        for (i = temp; i != NULL; i = i->next) {
+            for (j = i->next; j != NULL; j = j->next) {
+                if (strcmp(i->data.name, j->data.name) > 0) {
+                    Food tempData = i->data;
+                    i->data = j->data;
+                    j->data = tempData;
+                }
+            }
+        }
+    }
+
+    cout << "\n=== FOOD LIST ===\n";
+    FoodNode* printTemp = temp;
+    while (printTemp) {
+        cout << "ID: " << printTemp->data.foodID
+             << " | Name: " << printTemp->data.name
+             << " | Price: RM" << printTemp->data.price << endl;
+        printTemp = printTemp->next;
+    }
+    cout << endl;
+
+    while (temp) {
+        FoodNode* del = temp;
+        temp = temp->next;
+        delete del;
+    }
+
+    pressEnterToContinue();
+}
+
 /* ===== HELPER TO CHECK DUPLICATES ===== */
 bool isFoodNameExist(const string& name) {
     FoodNode* temp = foodHead;
@@ -169,6 +260,15 @@ bool isFoodNameExist(const string& name) {
 
     while (temp) {
         if (toLowerCase(temp->data.name) == lowerName) return true;
+        temp = temp->next;
+    }
+    return false;
+}
+
+bool isFoodIDExist(int id) {
+    FoodNode* temp = foodHead;
+    while (temp) {
+        if (temp->data.foodID == id) return true;
         temp = temp->next;
     }
     return false;
@@ -188,10 +288,10 @@ bool isAdminExist(const string& username) {
     return false;
 }
 
-/* ===== ADD FOOD WITH DUPLICATE CHECK ===== */
+/* ===== ADD FOOD ===== */
 void addFood() {
     system("cls");
-    displayFood();
+    displayFoodSimple();   // NORMAL DISPLAY
 
     FoodNode* newNode = new FoodNode;
 
@@ -202,6 +302,11 @@ void addFood() {
         if (newNode->data.foodID == 0) {
             delete newNode;
             return;
+        }
+
+        if (isFoodIDExist(newNode->data.foodID)) {
+            cout << "Error: Food ID already exists! Please enter a different ID.\n";
+            continue;
         }
 
         cout << "Food Name (0 to go back): ";
@@ -244,7 +349,7 @@ void addFood() {
 /* ===== EDIT FOOD ===== */
 void editFood() {
     system("cls");
-    displayFood();
+    displayFoodSimple();   // NORMAL DISPLAY
 
     int id;
     cout << "Enter Food ID to edit (0 to go back): ";
@@ -284,9 +389,10 @@ void editFood() {
     pressEnterToContinue();
 }
 
+/* ===== DELETE FOOD ===== */
 void deleteFood() {
     system("cls");
-    displayFood();
+    displayFoodSimple();   // NORMAL DISPLAY
 
     int id;
     cout << "Enter Food ID to delete (0 to go back): ";
@@ -309,41 +415,43 @@ void deleteFood() {
     else prev->next = temp->next;
 
     delete temp;
-
     saveFoodToMenu();
+
     cout << "Food Deleted Successfully!\n";
     pressEnterToContinue();
 }
 
-/* ===== CASE-INSENSITIVE FOOD SEARCH ===== */
+/* ===== SEARCH FOOD ===== */
 void searchFood() {
     system("cls");
 
     string key;
     cout << "Enter Food Name to search (0 to go back): ";
-    cin.ignore();
-    getline(cin, key);
+    getline(cin, key); // no cin.ignore before this
+
     if (key == "0") return;
 
     key = toLowerCase(key);
 
     FoodNode* temp = foodHead;
+    bool found = false;
     while (temp) {
         if (toLowerCase(temp->data.name) == key) {
             cout << "\nFood Found:\n";
             cout << "ID: " << temp->data.foodID << endl;
             cout << "Name: " << temp->data.name << endl;
             cout << "Price: RM" << temp->data.price << endl;
-            pressEnterToContinue();
-            return;
+            found = true;
+            break;
         }
         temp = temp->next;
     }
-    cout << "Food Not Found.\n";
+
+    if (!found) cout << "Food Not Found.\n";
     pressEnterToContinue();
 }
 
-/* ===== SEARCH MENU BY ID OR NAME (MAIN MENU) ===== */
+/* ===== SEARCH MENU ===== */
 void searchMenu() {
     system("cls");
 
@@ -358,9 +466,10 @@ void searchMenu() {
     cout << "2. Search by Name\n";
     cout << "0. Back\n";
     cout << "Choice: ";
+
     int choice;
     cin >> choice;
-    cin.ignore();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
     if (choice == 0) return;
 
     FoodNode* temp = foodHead;
@@ -369,7 +478,7 @@ void searchMenu() {
         int id;
         cout << "Enter Food ID: ";
         cin >> id;
-        cin.ignore();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
 
         while (temp) {
             if (temp->data.foodID == id) {
@@ -388,25 +497,22 @@ void searchMenu() {
     else if (choice == 2) {
         string key;
         cout << "Enter Food Name: ";
-        getline(cin, key);
+        getline(cin, key); // now works on first try
         key = toLowerCase(key);
 
+        bool found = false;
         while (temp) {
             if (toLowerCase(temp->data.name) == key) {
                 cout << "\nFood Found:\n";
                 cout << "ID: " << temp->data.foodID << endl;
                 cout << "Name: " << temp->data.name << endl;
                 cout << "Price: RM" << temp->data.price << endl;
-                pressEnterToContinue();
-                return;
+                found = true;
+                break;
             }
             temp = temp->next;
         }
-        cout << "Food Not Found.\n";
-        pressEnterToContinue();
-    }
-    else {
-        cout << "Invalid Choice!\n";
+        if (!found) cout << "Food Not Found.\n";
         pressEnterToContinue();
     }
 }
@@ -423,7 +529,7 @@ void addNewAdmin() {
         if (strcmp(newUser, "0") == 0) return;
 
         if (isAdminExist(newUser)) {
-            cout << "Error: Username already exists! Please enter a different username.\n";
+            cout << "Error: Username already exists!\n";
             continue;
         }
 
@@ -522,17 +628,17 @@ void foodMenu() {
         cout << "2. Edit Food/Drink\n";
         cout << "3. Delete Food/Drink\n";
         cout << "4. Display Food/Drink\n";
-        cout << "5. Search Food/Drink (by Name Only)\n";
+        cout << "5. Search Food/Drink\n";
         cout << "0. Back\n";
         cout << "\nChoice: ";
         cin >> choice;
-        cin.ignore();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
 
         switch(choice) {
             case 1: addFood(); break;
             case 2: editFood(); break;
             case 3: deleteFood(); break;
-            case 4: displayFood(); pressEnterToContinue(); break;
+            case 4: displayFood(); break;  // Sorting menu display
             case 5: searchFood(); break;
         }
     } while(choice != 0);
