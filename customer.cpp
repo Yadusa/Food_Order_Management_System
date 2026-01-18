@@ -654,8 +654,8 @@ class RegisterOrLogin
                     continue;
                 }
 
-                if(userType == 2 && choice == 2)
-                {
+                  if(userType == 2 && choice == 2)
+                 {
                     cout << "Invalid choice. Please try again!" << endl;
                     cout << "Press Enter to continue...";
                     cin.ignore(10000, '\n');
@@ -665,10 +665,202 @@ class RegisterOrLogin
                 if(choice != 1 && choice != 2 && choice !=3 && choice != 0)
                 {
                     cout << "Invalid choice. Please try again!" << endl;
+                    cout << "Press Enter to continue...";
+                    cin.ignore(10000, '\n');
+                    cin.get();
+                  }
+                  else
+                  {
+                    if(choice == 0)
+                    {
+                        exit(1);
+                    }
+                    else if(choice == 1)
+                    {
+                        login();
+                    }
+                    else if(choice == 2)
+                    {
+                        register();
+                    }
                 }
 
+                
+            } while(choice !=3);
+            
+            return;
+        }
+
+        void login()
+        {
+            while(true)
+            {
+                system("cls");
+                cout << "--------------------------------------------------" << endl;
+                cout << "                        LOGIN                     " << endl;
+                cout << "--------------------------------------------------" << endl;
+                cout << " Enter username (or type 'exit' to cancel login): ";
+                cin >> username;
+                  
+                  for (char& c: username)
+                  {
+                    c = tolower(c);
+                  }
+                    if(username == "exit")
+                    {
+                        cout << "Exiting Login... "  << endl;
+                        cout << "Press Enter to continue...";
+                        cin.ignore(10000, '\n');
+                        cin.get();
+
+                        return;
+                    } 
+                    
+                    cout << "Enter your password: ";
+                    cin >> password;
+                       string filename = (userType == 1) ? "customers.txt" : "admin.txt";
+                       ifstream file(filename);
+                          if(!file)
+                          {
+                            cout << "Error! No file found" << endl;
+                            return;
+                          }
+
+                          string line;
+                          bool found = false;
+                          string fileUsername, filePassword, id;
+
+                             while(getline(file, line))
+                             {
+                                if(userType == 1)
+                                {
+                                    size p1 = line.find(',');
+                                    size p2 = line.find(',', p1 + 1);
+                                       
+                                       if(p1 != string :: npos && p2 != string::npos)
+                                       {
+                                        id = line.substr(0,p1);
+                                        fileUsername = line.substr(p1+ 1, p2 - p1 - 1);
+                                        filePassword = line.substr(p2 + 1);
+                                           
+                                           if(username == fileUserame && password == filePassword)
+                                           {
+                                            found = true;
+
+                                            Customer customer(id, fileUsername, filePassword);
+                                            file.close;
+
+                                            cout << "Press Enter to continue...";
+                                               cin.ignore();
+                                               cin.get();
+                                               customerMenu(customer);
+                                               return.
+                                           }
+                                       }
+                                }
+                                else
+                                {
+                                    string level, status;
+
+                                    size p1 = line.ind(',');
+                                    size p2 = line.find(',', p1 + 1);
+                                    size p3 = line.find(',', p2 + 1);
+                                    size p4 = line.find(',', p3 + 1);
+
+
+                                    if(p1 != string:: npos && p2 != string::npos && p3 != string::npos && p4 != string::npos)
+                                    {
+                                        id = line.substr(0, p1);
+                                        fileUsername = line.substr(p1 + 1, p2 - p1 - 1);
+                                        fileUsername = line.substr(p2 + 1, p3 - p2 - 1);
+                                        level = line.substr(p3 + 1, p4 - p3 - 1);
+                                        status = line.substr(p4 + 1);
+
+                                        string lowerFileUsername = fileUsername;
+                                        or(char& c : lowerFileUsername)
+                                        {
+                                            c = tolower(c);
+                                        }
+                                          if(username == loweFileUsername && password == filePassowrd)
+                                          {
+                                            found = true;
+
+                                            if(status ="active")
+                                            {
+                                                Staff admin(id, fileUsername, filePassword, stoi(level), status);
+                                                file.close();
+                                                cout << "Login successful!" << endl;
+                                                cout << "Press Enter to continue...";
+                                                cin.ignore(10000, '\n');
+                                                cin.get();
+                                                adminMenu(admin);
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                cout << "Your accout is inactive. Please contact the administrator." << endl;
+                                                cout << "Press Enter to continue...";
+                                                cin.ignore(10000, '\n');
+                                                cin.get();
+                                                file.close();
+                                                return;                                                                                
+                                            }
+                                             
+                                          }
+                                    }
+                                }
+                             }
+
+                             file.close();
+                             if(!found)
+                             {
+                                cout << "Invalid username or password." << endl;
+                                cout << "Press Enter to try again...";
+                                cin.ignore(10000, '\n');
+                                cin.get();
+                             }
 
                 
+            }
+        }
+
+        void register()
+        {
+            while(true)
+            {
+                system("cls")
+                {
+                    cout << "--------------------------------------------------" << endl;
+                    cout << "                        Register                   " << endl;
+                    cout << "--------------------------------------------------" << endl;
+                    cout << " Enter new username (key in 'exit' to exit Register): ";
+                    cin >> username; 
+                }
+
+                for (char& c : username)
+                {
+                    c = tolower(c);
+
+                    cout << "Exiting Register..." << endl;
+                    cout << "Press Enter to continue... ";
+                    cin.ignore(10000, '\n');
+                    cin.get();
+
+                    return;
+                }
+
+                cout << "Enter new password: ";
+                cin >> password;
+
+                ifstream readFile("customers.txt");
+                string.line, existingUsername;
+                bool exists = false;
+                int maxId = 0;
+
+                   while(getline(readFile, line))
+                   {
+                    size p1 = line.find(',');
+                   }
             }
         }
     }
