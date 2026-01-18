@@ -703,6 +703,7 @@ void adminMenu() {
 int main() {
     initializeAdminFile();
     adminLogin();
-    adminMenu();
+    adminMenu();  
+    cout << "\nLogout Successful!\n"; 
     return 0;
 }
