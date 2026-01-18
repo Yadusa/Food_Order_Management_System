@@ -614,6 +614,67 @@ void customerMenu(Customer& customer)
     cin.get();
 }
 
+class RegisterOrLogin
+{
+    string username, Password;
+    int userType;
+    
+    public: 
+    {
+        RegisterOrLogin(int userType)
+        {
+            this -> userType = userType;
+        }
+
+        void RegisterOrLoginMenu()
+        {
+            int choice;
+
+            do
+            {
+                system("cls");
+                cout << "--------------------------------------------" << endl;
+                cout << "               SELECT YOUR CHOICE           " << endl;
+                cout << "--------------------------------------------" << endl;
+                cout << "                  1. LOGIN                  " << endl;
+                if(userType == 1)
+                   cout << "                  2. REGISTER               " << endl;
+                cout << "                  3. BACK                  " << endl;
+                cout << "                  0. EXIT                 " << endl;
+                cout << "--------------------------------------------" << endl;
+                cout << "\n Pleaseenter your choice in Interger(1,2,3...): ";
+
+                if(!cin >> choice)
+                {
+                    cout << "Invalid number.";
+                    cin.clear();
+                    cin.ignore(10000, '\n');
+                    cout << "Press Enter to continue...";
+                    cin.get();
+                    continue;
+                }
+
+                if(userType == 2 && choice == 2)
+                {
+                    cout << "Invalid choice. Please try again!" << endl;
+                    cout << "Press Enter to continue...";
+                    cin.ignore(10000, '\n');
+                    cin.get();
+                }
+
+                if(choice != 1 && choice != 2 && choice !=3 && choice != 0)
+                {
+                    cout << "Invalid choice. Please try again!" << endl;
+                }
+
+
+                
+            }
+        }
+    }
+}
+
+
 // ============================
 // Main
 // ============================
