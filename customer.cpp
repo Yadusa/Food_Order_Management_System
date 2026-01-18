@@ -860,11 +860,61 @@ class RegisterOrLogin
                    while(getline(readFile, line))
                    {
                     size p1 = line.find(',');
+                    size p2 = line.find(',', p1 + 1);
+
+                      if(p1 != string::npos && p2 != string::npos)
+                      {
+                        string idStr = line.substr(0, p1);
+                        existingUsername = line.substr(p1 + 1, p2 - p1 - 1);
+
+                          if(username == existingUsername)
+                          {
+                            exists = true;
+                            break;
+                          }
+
+                          string idNumStr = idStr.substr(1);
+                          int idNum = stoi(idNumStr);
+                          if(idNUm > maxId) maxId = idNum;
+                      }
                    }
+                   readFile.close();
+
+                   if(exists)
+                   {
+                    cout << "Usernam already exists. Try again." << endl;
+                    cout << "Press Enter to continue...";
+                    cin.ignore(1000, '\n');
+                    cin.get();
+                   }
+                   else
+                   {
+                    stringstream ss;
+                    ss << "C" << setw(3) << setfill('0') << (maxId + 1);
+                    string newId = ss.str();
+
+                    ofStream writeFile("Customers.txt", ios::app);
+                       if(!writeFile)
+                       {
+                        cout << "Error. No ile found for writing." << endl;
+                        return;
+                       }
+                   }
+
+                   writeFile << newId << "," << username << "," << password << endl;
+                   writeFile.close();
+                   
+                   cout << "Registration successful! Your ID is: " << newId << endl;
+                   cout << "You can now log in." << endl;
+                   cout << "\nPress Enter to continue...";
+                   cin.ignore(10000, '\n');
+                   cin.get();
+                   break;              
+
             }
         }
     }
-}
+};
 
 
 // ============================
