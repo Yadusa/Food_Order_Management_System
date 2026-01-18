@@ -952,3 +952,60 @@ int main()
 
     return 0;
 }
+
+void displaySalesReport() {
+	ifstream file("order.txt");
+	if (!file.is_open()) {
+		cout << "Error: Could not open order.txt" << endl;
+		return;
+	}
+	map<string, int> productQty;
+	map<string, float> productSales;
+	float totalSales = 0.0;
+	string line;
+	// Format: <table_no>,<order_id>,<item_name>,<quantity>,<price>,<status>
+	while (getline(file, line)) {
+		if (line.empty()) continue;
+		stringstream ss(line);
+		string table_no, order_id, item_name, quantity, price, status;
+		getline(ss, table_no, ',');
+		getline(ss, order_id, ',');
+		getline(ss, item_name, ',');
+		getline(ss, quantity, ',');
+		getline(ss, price, ',');
+		getline(ss, status, ',');
+		int qty = stoi(quantity);
+		float prc = stof(price);
+		productQty[item_name] += qty;
+		productSales[item_name] += qty * prc;
+		totalSales += qty * prc;
+	}
+	file.close();
+	// Find product with max quantity
+	string topProduct;
+	int maxQty = 0;
+	for (auto& p : productQty) {
+		if (p.second > maxQty) {
+			maxQty = p.second;
+			topProduct = p.first;
+		}
+	}
+	float totalProfit = totalSales * 0.3f; // 30% margin
+	cout << "+------------------------------------------------------+" << endl;
+	cout << "+                     SALES REPORT                     +" << endl;
+	cout << "+------------------------------------------------------+" << endl;
+	cout << "| Product Name         |  Total Sold   |  Total Sales  |" << endl;
+	cout << "+----------------------+---------------+---------------+" << endl;
+	for (auto& p : productQty) {
+		cout << "| " << setw(20) << left << p.first << " | "
+		     << setw(13) << right << p.second << " | RM "
+		     << setw(10) << right << fixed << setprecision(2) << productSales[p.first] << " |" << endl;
+	}
+	cout << "+----------------------+---------------+---------------+" << endl;
+	cout << "| Product of the Month: " << setw(30) << left << topProduct << " |" << endl;
+	cout << "| Total Sales: RM " << right << fixed << setprecision(2) << totalSales << setw(33) << " |" << endl;
+	cout << "| Total Profit (30%): RM " << right << fixed << setprecision(2) << totalProfit << setw(27) << " |" << endl;
+	cout << "+----------------------+---------------+---------------+" << endl;
+	cout << "Press Enter to continue...";
+	cin.get();
+}
