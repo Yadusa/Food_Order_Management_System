@@ -312,7 +312,7 @@ void addOrderItem(Menu& menuItems, orderItem*& head)
     if (qty <= 0)
     {
         cout << "Quantity must be more than 0.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -321,7 +321,7 @@ void addOrderItem(Menu& menuItems, orderItem*& head)
     if (m == NULL)
     {
         cout << "Menu ID not found.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -336,7 +336,7 @@ void addOrderItem(Menu& menuItems, orderItem*& head)
             cur->total = cur->orderQuantity * cur->orderPrice;
             cout << "Updated quantity for " << cur->orderName
                  << " (Qty now: " << cur->orderQuantity << ")\n";
-            cout << "Press Enter...";
+            cout << "Press Enter to continue...";
             cin.get();
             return;
         }
@@ -370,7 +370,7 @@ void editOrderQuantity(orderItem* head)
     if (head == NULL)
     {
         cout << "\nNo orders to edit.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -387,7 +387,7 @@ void editOrderQuantity(orderItem* head)
     if (newQty <= 0)
     {
         cout << "Quantity must be more than 0.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -400,7 +400,7 @@ void editOrderQuantity(orderItem* head)
             cur->orderQuantity = newQty;
             cur->total = cur->orderPrice * newQty;
             cout << "Order updated successfully.\n";
-            cout << "Press Enter...";
+            cout << "Press Enter to continue...";
             cin.get();
             return;
         }
@@ -408,7 +408,7 @@ void editOrderQuantity(orderItem* head)
     }
 
     cout << "Order ID not found.\n";
-    cout << "Press Enter...";
+    cout << "Press Enter to continue...";
     cin.get();
 }
 
@@ -417,7 +417,7 @@ void deleteOrderLine(orderItem*& head)
     if (head == NULL)
     {
         cout << "\nNo orders to delete.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -433,7 +433,7 @@ void deleteOrderLine(orderItem*& head)
         head = head->next;
         delete temp;
         cout << "Deleted successfully.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -445,7 +445,7 @@ void deleteOrderLine(orderItem*& head)
     if (cur->next == NULL)
     {
         cout << "Order ID not found.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -455,7 +455,7 @@ void deleteOrderLine(orderItem*& head)
     delete temp;
 
     cout << "Deleted successfully.\n";
-    cout << "Press Enter...";
+    cout << "Press Enter to continue...";
     cin.get();
 }
 
@@ -464,7 +464,7 @@ void confirmOrderToFile(orderItem*& head)
     if (head == NULL)
     {
         cout << "\nNo orders to confirm.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -476,7 +476,7 @@ void confirmOrderToFile(orderItem*& head)
     if (ans.empty() || toupper(ans[0]) != 'Y')
     {
         cout << "Cancelled.\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -485,7 +485,7 @@ void confirmOrderToFile(orderItem*& head)
     if (!out.is_open())
     {
         cout << "Failed to open orders.txt\n";
-        cout << "Press Enter...";
+        cout << "Press Enter to continue...";
         cin.get();
         return;
     }
@@ -514,7 +514,7 @@ void confirmOrderToFile(orderItem*& head)
     }
 
     cout << "Order confirmed and saved!\n";
-    cout << "Press Enter...";
+    cout << "Press Enter to continue...";
     cin.get();
 }
 
@@ -528,12 +528,12 @@ void OrderMenu(Menu& menuItems, orderItem*& head)
         cout << "====================================================\n";
         cout << "                    ORDER NOW                       \n";
         cout << "====================================================\n";
-        cout << "1. Add Item\n";
-        cout << "2. View Order Summary\n";
-        cout << "3. Edit Quantity\n";
-        cout << "4. Delete Item\n";
-        cout << "5. Confirm Order (Save)\n";
-        cout << "0. Back\n";
+        cout << "                   1. Add Item                      \n";
+        cout << "                   2. View Order Summary            \n";
+        cout << "                   3. Edit Quantity                 \n";
+        cout << "                   4. Delete Item                   \n";
+        cout << "                   5. Confirm Order (Save)          \n";
+        cout << "                   0. Back                          \n";
         cout << "====================================================\n";
         cout << "Enter choice: ";
         getline(cin, choice);
@@ -581,10 +581,10 @@ void customerMenu(Customer& customer)
         cout << "--------------------------------------------------------------\n";
         cout << "                         CUSTOMER MENU\n";
         cout << "--------------------------------------------------------------\n";
-        cout << "1. View Menu\n";
-        cout << "2. Order Now\n";
-        cout << "3. View Order Summary\n";
-        cout << "0. Logout\n";
+        cout << "                       1. View Menu                           \n";
+        cout << "                       2. Order Now                           \n";
+        cout << "                       3. View Order Summary                  \n";
+        cout << "                       0. Logout                              \n";
         cout << "--------------------------------------------------------------\n";
         cout << "Enter your choice: ";
         getline(cin, choice);
@@ -642,7 +642,7 @@ class RegisterOrLogin
                 cout << "                  3. BACK                  " << endl;
                 cout << "                  0. EXIT                 " << endl;
                 cout << "--------------------------------------------" << endl;
-                cout << "\n Pleaseenter your choice in Interger(1,2,3...): ";
+                cout << "\n Please enter your choice in Interger(1,2,3...): ";
 
                 if(!cin >> choice)
                 {
@@ -882,7 +882,7 @@ class RegisterOrLogin
 
                    if(exists)
                    {
-                    cout << "Usernam already exists. Try again." << endl;
+                    cout << "Username already exists. Try again." << endl;
                     cout << "Press Enter to continue...";
                     cin.ignore(1000, '\n');
                     cin.get();
@@ -896,7 +896,7 @@ class RegisterOrLogin
                     ofStream writeFile("Customers.txt", ios::app);
                        if(!writeFile)
                        {
-                        cout << "Error. No ile found for writing." << endl;
+                        cout << "Error. No file found for writing." << endl;
                         return;
                        }
                    }
@@ -928,10 +928,11 @@ int main()
         cout << "==================================================\n";
         cout << "     WELCOME TO KARABU FOOD ORDERING SYSTEM       \n";
         cout << "==================================================\n";
-        cout << "1. CUSTOMER\n";
-        cout << "2. ADMIN\n";
-        cout << "3. EXIT\n";
-        cout << "Please enter your selection: ";
+        cout << "                 1. CUSTOMER                      \n";
+        cout << "                 2. ADMIN                         \n";
+        cout << "                 0. EXIT                          \n";
+        cout << "==================================================\n";
+        cout << "Please enter your selection:                       ";
 
         int choice;
         try
@@ -951,7 +952,7 @@ int main()
                 Admin admin;
                 admin.login();
             }
-            else if (choice == 3)
+            else if (choice == 0)
             {
                 cout << "Exiting system. Thank you for using KARABU!\n";
                 break;
