@@ -328,20 +328,20 @@ void viewOrderSummary(orderItem* head)
     else if (sChoice == "2") sortOrders(head, 2);
 
     system("cls");
-    cout << "==================== ORDER SUMMARY ====================\n";
-    cout << left << setw(8) << "OID"
-         << setw(8) << "MID"
+    cout << "============================== ORDER SUMMARY =================================\n";
+    cout << left << setw(10) << "OrderID"
+         << setw(10) << "MID"
          << setw(22) << "Item"
          << right << setw(6) << "Qty"
          << setw(12) << "Price"
          << setw(12) << "Total" << "\n";
-    cout << "-------------------------------------------------------\n";
+    cout << "------------------------------------------------------------------------------\n";
 
     orderItem* cur = head;
     while (cur != NULL)
     {
-        cout << left << setw(8) << cur->orderId
-             << setw(8) << cur->menuId
+        cout << left << setw(10) << cur->orderId
+             << setw(10) << cur->menuId
              << setw(22) << cur->orderName
              << right << setw(6) << cur->orderQuantity
              << setw(12) << fixed << setprecision(2) << cur->orderPrice
@@ -350,10 +350,116 @@ void viewOrderSummary(orderItem* head)
         cur = cur->next;
     }
 
-    cout << "-------------------------------------------------------\n";
+    cout << "------------------------------------------------------------------------------\n";
     cout << "Grand Total: RM " << fixed << setprecision(2) << calculateGrandTotal(head) << "\n";
-    cout << "=======================================================\n";
+    cout << "===============================================================================\n";
     cout << "Press Enter to continue...";
+    cin.get();
+}
+
+// ========================================================
+// SEARCHING IMPLEMENTATION (Binary Search from File)
+// ========================================================
+
+void searchMenu() { 
+    struct TempItem {
+        int id;
+        string name;
+        float price;
+    };
+    
+    TempItem arr[100]; 
+    int count = 0;
+
+    ifstream file("menu.txt");
+    if (!file.is_open()) {
+        cout << "\n[ERROR]: Could not open menu.txt.\n";
+        cout << "Press Enter to return...";
+        cin.get();
+        return;
+    }
+
+    string line;
+    while (getline(file, line) && count < 100) {
+        stringstream ss(line);
+        string idStr, name, priceStr;
+        
+        getline(ss, idStr, ',');
+        getline(ss, name, ',');
+        getline(ss, priceStr, ',');
+
+        if (!idStr.empty() && !name.empty()) {
+            // FIX: Remove leading/trailing spaces from the name
+            size_t first = name.find_first_not_of(' ');
+            if (string::npos != first) {
+                size_t last = name.find_last_not_of(' ');
+                name = name.substr(first, (last - first + 1));
+            }
+
+            arr[count].id = stoi(idStr);
+            arr[count].name = name;
+            arr[count].price = stof(priceStr);
+            count++;
+        }
+    }
+    file.close();
+
+    if (count == 0) {
+        cout << "\n[ERROR]: The menu is empty.\n";
+        cin.get();
+        return;
+    }
+
+    // Sort array by name for Binary Search
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (arr[j].name > arr[j+1].name) swap(arr[j], arr[j+1]);
+        }
+    }
+
+    system("cls");
+    cout << "================== SEARCH MENU ==================\n";
+    cout << "Enter Food Name: ";
+    string target;
+    getline(cin, target);
+
+    // Convert target to lowercase
+    string lowTarget = target;
+    for(int i=0; i < lowTarget.length(); i++) {
+        lowTarget[i] = tolower(lowTarget[i]); 
+    }
+
+    int low = 0, high = count - 1;
+    bool found = false;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        
+        string lowCurrent = arr[mid].name;
+        for(int i=0; i < lowCurrent.length(); i++) {
+            lowCurrent[i] = tolower(lowCurrent[i]);
+        }
+
+        if (lowCurrent == lowTarget) {
+            cout << "\n>>> ITEM AVAILABLE! <<<\n";
+            cout << "--------------------------------------\n";
+            cout << "Item Name : " << arr[mid].name << "\n";
+            cout << "Menu ID   : " << arr[mid].id << "\n";
+            cout << "Price     : RM " << fixed << setprecision(2) << arr[mid].price << "\n";
+            cout << "--------------------------------------\n";
+            found = true;
+            break;
+        }
+        
+        if (lowCurrent < lowTarget) low = mid + 1;
+        else high = mid - 1;
+    }
+
+    if (!found) {
+        cout << "\n[SEARCH ERROR]: '" << target << "' is not available.\n";
+    }
+
+    cout << "\nPress Enter to continue...";
     cin.get();
 }
 
@@ -591,10 +697,11 @@ void OrderMenu(Menu& menuItems, orderItem*& head)
         cout << "                    ORDER NOW                       \n";
         cout << "====================================================\n";
         cout << "                   1. Add Item                       \n";
-        cout << "                   2. View Order Summary             \n";
-        cout << "                   3. Edit Quantity                  \n";
-        cout << "                   4. Delete Item                    \n";
-        cout << "                   5. Confirm Order (Save)           \n";
+        cout << "                   2. Search Food                    \n";
+        cout << "                   3. View Order Summary             \n";
+        cout << "                   4. Edit Quantity                  \n";
+        cout << "                   5. Delete Item                    \n";
+        cout << "                   6. Confirm Order (Save)           \n";
         cout << "                   0. Back                           \n";
         cout << "====================================================\n";
         cout << "Enter choice: ";
@@ -606,21 +713,22 @@ void OrderMenu(Menu& menuItems, orderItem*& head)
         }
         else if (choice == "2")
         {
-            viewOrderSummary(head);
+            searchMenu();
         }
         else if (choice == "3")
         {
             viewOrderSummary(head);
-            editOrderQuantity(head);
         }
         else if (choice == "4")
         {
-            viewOrderSummary(head);
-            deleteOrderLine(head);
+            editOrderQuantity(head);
         }
         else if (choice == "5")
         {
-            viewOrderSummary(head);
+            deleteOrderLine(head);
+        }
+        else if (choice == "6")
+        {
             confirmOrderToFile(head);
         }
 
@@ -998,7 +1106,7 @@ int main()
             }
             else
             {
-                cout << "Invalid selection. Press Enter to continue...\n";
+                cout << "Invalid selection. Press Enter...\n";
                 cin.get();
             }
         }
