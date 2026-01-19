@@ -259,19 +259,76 @@ int getNextOrderId(orderItem* head)
     return mx + 1;
 }
 
+// ============================
+// SORTING IMPLEMENTATION (Bubble Sort)
+// ============================
+
+void swapNodeData(orderItem* a, orderItem* b) {
+    // Swaps all data fields between two nodes
+    swap(a->orderId, b->orderId);
+    swap(a->menuId, b->menuId);
+    swap(a->orderName, b->orderName);
+    swap(a->orderPrice, b->orderPrice);
+    swap(a->orderQuantity, b->orderQuantity);
+    swap(a->total, b->total);
+}
+
+void sortOrders(orderItem* head, int criteria) {
+    if (head == NULL || head->next == NULL) return;
+
+    bool swapped;
+    orderItem* ptr1;
+    orderItem* lptr = NULL; // last pointer
+
+    do {
+        swapped = false;
+        ptr1 = head;
+
+        while (ptr1->next != lptr) {
+            bool shouldSwap = false;
+            
+            if (criteria == 1) { // Sort by Name (A-Z)
+                if (ptr1->orderName > ptr1->next->orderName) shouldSwap = true;
+            } else { // Sort by Order ID (Lowest to Highest)
+                if (ptr1->orderId > ptr1->next->orderId) shouldSwap = true;
+            }
+
+            if (shouldSwap) {
+                swapNodeData(ptr1, ptr1->next);
+                swapped = true;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+
 void viewOrderSummary(orderItem* head)
 {
     system("cls");
-    cout << "==================== ORDER SUMMARY ====================\n";
-
     if (head == NULL)
     {
+        cout << "==================== ORDER SUMMARY ====================\n";
         cout << "No items in your order yet.\n";
         cout << "Press Enter to continue...";
         cin.get();
         return;
     }
 
+    // Ask user for sorting preference
+    cout << "Order found! Would you like to sort the view?\n";
+    cout << "1. Sort by Name (A-Z)\n";
+    cout << "2. Sort by Order ID\n";
+    cout << "0. No Sort / Keep Current\n";
+    cout << "Enter choice: ";
+    string sChoice;
+    getline(cin, sChoice);
+
+    if (sChoice == "1") sortOrders(head, 1);
+    else if (sChoice == "2") sortOrders(head, 2);
+
+    system("cls");
+    cout << "==================== ORDER SUMMARY ====================\n";
     cout << left << setw(8) << "OID"
          << setw(8) << "MID"
          << setw(22) << "Item"
@@ -588,7 +645,6 @@ void customerMenu(Customer& customer)
         cout << "--------------------------------------------------------------\n";
         cout << "                       1. View Menu                            \n";
         cout << "                       2. Order Now                            \n";
-        cout << "                       3. View Order Summary                  \n";
         cout << "                       0. Logout                              \n";
         cout << "--------------------------------------------------------------\n";
         cout << "Enter your choice: ";
@@ -604,10 +660,6 @@ void customerMenu(Customer& customer)
         else if (choice == "2")
         {
             OrderMenu(menuItems, orderHead);
-        }
-        else if (choice == "3")
-        {
-            viewOrderSummary(orderHead);
         }
 
     } while (choice != "0");
@@ -927,16 +979,15 @@ int main()
 
             if (choice == 1)
             {
-                Customer customer;
-                customer.login();
+                // CHANGE: Instead of Customer.login(), 
+                // we call the RegisterOrLogin class menu
+                RegisterOrLogin customerPortal(1); // 1 indicates Customer type
+                customerPortal.RegisterOrLoginMenu();
             }
             else if (choice == 2)
             {
-                /* ADMIN PORTAL DISABLED
-                Admin admin;
-                admin.login();
-                */
-                cout << "Admin portal is currently disabled. Contact system support.\n";
+                // Admin is disabled as per your request
+                cout << "Admin portal is currently disabled.\n";
                 cout << "Press Enter to continue...";
                 cin.get();
             }
@@ -947,7 +998,7 @@ int main()
             }
             else
             {
-                cout << "Invalid selection. Press Enter...\n";
+                cout << "Invalid selection. Press Enter to continue...\n";
                 cin.get();
             }
         }
