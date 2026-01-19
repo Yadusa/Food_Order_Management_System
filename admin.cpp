@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cctype>
 #include <limits>
+#include <iomanip>
 using namespace std;
 
 /* ===================== STRUCTS ===================== */
@@ -677,6 +678,122 @@ void manageAdminMenu() {
     } while(choice != 0);
 }
 
+/* ===== VIEW RECEIPT BY ORDER ID ===== */
+void viewReceiptByOrder()
+{
+    system("cls");
+
+    ifstream in("orders.txt");
+    if (!in)
+    {
+        cout << "No orders.txt found!\n";
+        pressEnterToContinue();
+        return;
+    }
+
+    string line;
+    string orderIDs = "";
+    bool first = true;
+
+    while (getline(in, line))
+    {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string oid;
+        getline(ss, oid, ',');
+
+        if (orderIDs.find(oid) == string::npos)
+        {
+            if (!first) orderIDs += ", ";
+            orderIDs += oid;
+            first = false;
+        }
+    }
+
+    if (orderIDs.empty())
+    {
+        cout << "No receipts found.\n";
+        in.close();
+        pressEnterToContinue();
+        return;
+    }
+
+    cout << "Available Receipts (Order IDs):\n";
+    cout << orderIDs << "\n\n";
+
+    cout << "Enter Order ID to view (0 to back): ";
+    string selectedID;
+    cin >> selectedID;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (selectedID == "0")
+    {
+        in.close();
+        return;
+    }
+
+    in.clear();
+    in.seekg(0);
+
+    system("cls");
+    cout << "==================== RECEIPT FOR ORDER ID: " << selectedID << " ====================\n";
+    cout << left << setw(8) << "OID"
+         << setw(8) << "MID"
+         << setw(22) << "Item"
+         << right << setw(6) << "Qty"
+         << setw(12) << "Price"
+         << setw(12) << "Total" << "\n";
+    cout << "---------------------------------------------------------------\n";
+
+    bool found = false;
+    double grandTotal = 0.0;
+
+    while (getline(in, line))
+    {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string oid, mid, name, qty, price, total;
+
+        getline(ss, oid, ',');
+        getline(ss, mid, ',');
+        getline(ss, name, ',');
+        getline(ss, qty, ',');
+        getline(ss, price, ',');
+        getline(ss, total, ',');
+
+        if (oid == selectedID)
+        {
+            found = true;
+            grandTotal += stod(total);
+
+            cout << left << setw(8) << oid
+                 << setw(8) << mid
+                 << setw(22) << name
+                 << right << setw(6) << qty
+                 << setw(12) << price
+                 << setw(12) << total << "\n";
+        }
+    }
+
+    if (!found)
+    {
+        cout << "\nReceipt not found for Order ID: " << selectedID << "\n";
+    }
+    else
+    {
+        cout << "---------------------------------------------------------------\n";
+        cout << "Grand Total: RM " << fixed << setprecision(2) << grandTotal << "\n";
+    }
+
+    cout << "===============================================================\n";
+
+    in.close();
+    pressEnterToContinue();
+}
+
+
 void adminMenu() {
     loadFoodFromFile();
     int choice;
@@ -686,6 +803,7 @@ void adminMenu() {
         cout << "1. Food & Drink\n";
         cout << "2. Search Menu\n";
         cout << "3. Manage Admin\n";
+        cout << "4. View Receipts\n";
         cout << "0. Logout\n";
         cout << "\nChoice: ";
         cin >> choice;
@@ -695,6 +813,7 @@ void adminMenu() {
             case 1: foodMenu(); break;
             case 2: searchMenu(); break;
             case 3: manageAdminMenu(); break;
+            case 4: viewReceiptByOrder(); break;
         }
     } while(choice != 0);
 }
