@@ -135,7 +135,7 @@ public:
     void displayMenu()
     {
         cout << "=====================================\n";
-        cout << "               MENU                  \n";
+        cout << "                MENU                  \n";
         cout << "=====================================\n";
         cout << left << setw(6) << "ID"
              << setw(22) << "Item Name"
@@ -187,7 +187,7 @@ public:
 };
 
 // ============================
-// Admin Class (simple stub)
+// Admin Class (DISABLED)
 // ============================
 class Admin : public User
 {
@@ -197,6 +197,7 @@ public:
 
     void login() override
     {
+        /* ADMIN PORTAL DISABLED
         system("cls");
         cout << "================= ADMIN LOGIN =================\n";
         cout << "Username: ";
@@ -215,11 +216,15 @@ public:
 
         cout << "Press Enter to continue...";
         cin.get();
+        */
+        cout << "\nAdmin login is currently disabled.\n";
+        cout << "Press Enter to return...";
+        cin.get();
     }
 };
 
 // ============================
-// ORDER IMPLEMENTATION (Your part)
+// ORDER IMPLEMENTATION
 // ============================
 menuItem* findMenuById(int id)
 {
@@ -528,12 +533,12 @@ void OrderMenu(Menu& menuItems, orderItem*& head)
         cout << "====================================================\n";
         cout << "                    ORDER NOW                       \n";
         cout << "====================================================\n";
-        cout << "                   1. Add Item                      \n";
-        cout << "                   2. View Order Summary            \n";
-        cout << "                   3. Edit Quantity                 \n";
-        cout << "                   4. Delete Item                   \n";
-        cout << "                   5. Confirm Order (Save)          \n";
-        cout << "                   0. Back                          \n";
+        cout << "                   1. Add Item                       \n";
+        cout << "                   2. View Order Summary             \n";
+        cout << "                   3. Edit Quantity                  \n";
+        cout << "                   4. Delete Item                    \n";
+        cout << "                   5. Confirm Order (Save)           \n";
+        cout << "                   0. Back                           \n";
         cout << "====================================================\n";
         cout << "Enter choice: ";
         getline(cin, choice);
@@ -577,12 +582,12 @@ void customerMenu(Customer& customer)
     {
         system("cls");
         cout << "--------------------------------------------------------------\n";
-        cout << "|               Welcome, " << customer.getUsername() << "                               |\n";
+        cout << "|                Welcome, " << customer.getUsername() << "                                |\n";
         cout << "--------------------------------------------------------------\n";
-        cout << "                         CUSTOMER MENU\n";
+        cout << "                        CUSTOMER MENU\n";
         cout << "--------------------------------------------------------------\n";
-        cout << "                       1. View Menu                           \n";
-        cout << "                       2. Order Now                           \n";
+        cout << "                       1. View Menu                            \n";
+        cout << "                       2. Order Now                            \n";
         cout << "                       3. View Order Summary                  \n";
         cout << "                       0. Logout                              \n";
         cout << "--------------------------------------------------------------\n";
@@ -632,13 +637,13 @@ class RegisterOrLogin
             {
                 system("cls");
                 cout << "--------------------------------------------" << endl;
-                cout << "               SELECT YOUR CHOICE           " << endl;
+                cout << "                SELECT YOUR CHOICE            " << endl;
                 cout << "--------------------------------------------" << endl;
-                cout << "                  1. LOGIN                  " << endl;
+                cout << "                   1. LOGIN                  " << endl;
                 if(userType == 1)
-                   cout << "                  2. REGISTER               " << endl;
-                cout << "                  3. BACK                  " << endl;
-                cout << "                  0. EXIT                 " << endl;
+                   cout << "                   2. REGISTER               " << endl;
+                cout << "                   3. BACK                   " << endl;
+                cout << "                   0. EXIT                   " << endl;
                 cout << "--------------------------------------------" << endl;
                 cout << "\n Please enter your choice in Interger(1,2,3...): ";
 
@@ -693,7 +698,7 @@ class RegisterOrLogin
             {
                 system("cls");
                 cout << "--------------------------------------------------" << endl;
-                cout << "                        LOGIN                     " << endl;
+                cout << "                         LOGIN                      " << endl;
                 cout << "--------------------------------------------------" << endl;
                 cout << " Enter username (or type 'exit' to cancel login): ";
                 cin >> username;
@@ -713,7 +718,18 @@ class RegisterOrLogin
                     
                 cout << "Enter your password: ";
                 cin >> password;
+                
+                // ADMIN FILENAME LOGIC COMMENTED OUT FOR SECURITY
                 string filename = (userType == 1) ? "customers.txt" : "admin.txt";
+                
+                if (userType == 2) {
+                   cout << "\nAdmin direct login through this module is disabled.\n";
+                   cout << "Press Enter to continue...";
+                   cin.ignore(10000, '\n');
+                   cin.get();
+                   return;
+                }
+
                 ifstream file(filename.c_str());
                 if(!file)
                 {
@@ -752,6 +768,7 @@ class RegisterOrLogin
                             }
                         }
                     }
+                    /* ADMIN LOGIC COMMENTED OUT
                     else
                     {
                         string level, status;
@@ -778,27 +795,16 @@ class RegisterOrLogin
                                 found = true;
                                 if(status == "active")
                                 {
-                                    Staff admin(id, fileUsername, filePassword, stoi(level), status);
-                                    file.close();
-                                    cout << "Login successful!" << endl;
-                                    cout << "Press Enter to continue...";
-                                    cin.ignore(10000, '\n');
-                                    cin.get();
-                                    adminMenu(admin);
-                                    return;
-                                }
-                                else
-                                {
-                                    cout << "Your account is inactive. Please contact the administrator." << endl;
-                                    cout << "Press Enter to continue...";
-                                    cin.ignore(10000, '\n');
-                                    cin.get();
-                                    file.close();
-                                    return;                                                                                
+                                    // Staff admin(id, fileUsername, filePassword, stoi(level), status);
+                                    // file.close();
+                                    // cout << "Login successful!" << endl;
+                                    // adminMenu(admin);
+                                    // return;
                                 }
                             }
                         }
                     }
+                    */
                 }
                 file.close();
                 if(!found)
@@ -817,7 +823,7 @@ class RegisterOrLogin
             {
                 system("cls");
                 cout << "--------------------------------------------------" << endl;
-                cout << "                        Register                   " << endl;
+                cout << "                        Register                    " << endl;
                 cout << "--------------------------------------------------" << endl;
                 cout << " Enter new username (key in 'exit' to exit Register): ";
                 cin >> username; 
@@ -903,13 +909,13 @@ int main()
     {
         system("cls");
         cout << "==================================================\n";
-        cout << "     WELCOME TO KARABU FOOD ORDERING SYSTEM       \n";
+        cout << "      WELCOME TO KARABU FOOD ORDERING SYSTEM       \n";
         cout << "==================================================\n";
         cout << "                 1. CUSTOMER                      \n";
-        cout << "                 2. ADMIN                         \n";
+        cout << "                 2. ADMIN (DISABLED)              \n";
         cout << "                 0. EXIT                          \n";
         cout << "==================================================\n";
-        cout << "Please enter your selection:                       ";
+        cout << "Please enter your selection: ";
 
         int choice;
         try
@@ -926,8 +932,13 @@ int main()
             }
             else if (choice == 2)
             {
+                /* ADMIN PORTAL DISABLED
                 Admin admin;
                 admin.login();
+                */
+                cout << "Admin portal is currently disabled. Contact system support.\n";
+                cout << "Press Enter to continue...";
+                cin.get();
             }
             else if (choice == 0)
             {
@@ -952,4 +963,3 @@ int main()
 
     return 0;
 }
-
