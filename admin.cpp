@@ -1,12 +1,39 @@
 #include <iostream>
+#include <string>
 #include <fstream>
-#include <cstring>
 #include <sstream>
-#include <cctype>
-#include <limits>
 #include <iomanip>
+#include <cctype>
+#include <windows.h>
+#include <stdexcept>
+#include <cstring>
+#include <limits>   
 
 using namespace std;
+
+// ============================
+// Linked List Structures
+// ============================
+struct menuItem
+{
+    int menuId;
+    string menuName;
+    float menuPrice;
+    menuItem* next;
+};
+
+menuItem* itemHead = NULL;
+
+struct orderItem
+{
+    int orderId;
+    int menuId;
+    string orderName;
+    double orderPrice;
+    int orderQuantity;
+    double total;
+    orderItem* next;
+};
 
 /* ===================== STRUCTS ===================== */
 struct Food {
@@ -34,6 +61,170 @@ struct ReportNode {
 /* ===================== GLOBAL HEADS ===================== */
 FoodNode* foodHead = NULL;
 ReportNode* reportHead = NULL;
+
+// Order list head (separate from menu head)
+orderItem* orderHead = NULL;
+
+// ============================
+// Forward Declarations
+// ============================
+class Menu;
+class Customer;
+class Admin;
+
+void customerMenu(Customer& customer);
+
+// Order functions
+void OrderMenu(Menu& menuItems, orderItem*& orderHead);
+void addOrderItem(Menu& menuItems, orderItem*& orderHead);
+void viewOrderSummary(orderItem* orderHead);
+void editOrderQuantity(orderItem* orderHead);
+void deleteOrderLine(orderItem*& orderHead);
+void confirmOrderToFile(orderItem*& orderHead);
+double calculateGrandTotal(orderItem* orderHead);
+menuItem* findMenuById(int id);
+int getNextOrderId(orderItem* head);
+
+// ============================
+// Base class
+// ============================
+class User
+{
+protected:
+    string id, username, password;
+
+public:
+    User(string id = "", string username = "", string password = "")
+        : id(id), username(username), password(password) {}
+
+    string getUsername() const { return username; }
+    string getId() const { return id; }
+
+    virtual void login() = 0;
+    virtual ~User() {}
+};
+
+// ============================
+// Menu Class
+// ============================
+class Menu
+{
+public:
+    Menu()
+    {
+        // clear old list if any
+        itemHead = NULL;
+
+        ifstream file("menu.txt");
+        if (!file.is_open())
+        {
+            cout << "No menu.txt found!\n";
+            return;
+        }
+
+        string line;
+        while (getline(file, line))
+        {
+            if (line.empty()) continue;
+
+            stringstream ss(line);
+            string idStr, name, priceStr;
+
+            getline(ss, idStr, ',');
+            getline(ss, name, ',');
+            getline(ss, priceStr, ',');
+
+            if (idStr.empty() || name.empty() || priceStr.empty()) continue;
+
+            int id = stoi(idStr);
+            float price = stof(priceStr);
+
+            menuItem* newItem = new menuItem;
+            newItem->menuId = id;
+            newItem->menuName = name;
+            newItem->menuPrice = price;
+            newItem->next = NULL;
+
+            if (itemHead == NULL)
+            {
+                itemHead = newItem;
+            }
+            else
+            {
+                menuItem* current = itemHead;
+                while (current->next != NULL)
+                    current = current->next;
+                current->next = newItem;
+            }
+        }
+
+        file.close();
+    }
+
+    void displayMenu()
+    {
+        cout << "=====================================\n";
+        cout << "                MENU                  \n";
+        cout << "=====================================\n";
+        cout << left << setw(6) << "ID"
+             << setw(22) << "Item Name"
+             << right << setw(12) << "Price (RM)\n";
+        cout << "-------------------------------------\n";
+
+        menuItem* current = itemHead;
+        while (current != NULL)
+        {
+            cout << left << setw(6) << current->menuId
+                 << setw(22) << current->menuName
+                 << right << setw(12) << fixed << setprecision(2) << current->menuPrice
+                 << "\n";
+            current = current->next;
+        }
+        cout << "-------------------------------------\n";
+    }
+};
+
+// ============================
+// Customer Class
+// ============================
+class Customer : public User
+{
+public:
+    Customer(string id = "", string username = "", string password = "")
+        : User(id, username, password) {}
+
+    void login() override
+    {
+        system("cls");
+        cout << "================ CUSTOMER LOGIN ================\n";
+        cout << "Username: ";
+        getline(cin, username);
+        cout << "Password: ";
+        getline(cin, password);
+
+        // Simple demo login (you can connect to file later)
+        if (username.empty() || password.empty())
+        {
+            cout << "Login failed. Press Enter...\n";
+            cin.get();
+            return;
+        }
+
+        id = "C001";
+        customerMenu(*this);
+    }
+};
+
+// ============================
+// Admin Class
+// ============================
+class Admin : public User
+{
+public:
+    Admin(string id = "", string username = "", string password = "")
+        : User(id, username, password) {}
+
+};
 
 /* ===================== HELPER FUNCTIONS ===================== */
 string toLowerCase(string s) {
@@ -139,8 +330,8 @@ void saveFoodToMenu() {
     ofstream out("menu.txt");
     FoodNode* temp = foodHead;
     while (temp) {
-        out << temp->data.foodID << ", "
-            << temp->data.name << ", "
+        out << temp->data.foodID << ","
+            << temp->data.name << ","
             << temp->data.price << endl;
         temp = temp->next;
     }
@@ -273,6 +464,20 @@ bool isFoodIDExist(int id) {
         if (temp->data.foodID == id) return true;
         temp = temp->next;
     }
+    return false;
+}
+
+bool isAdminExist(const string& username) {
+    ifstream in("admin.txt");
+    char u[20], p[20];
+
+    while (in >> u >> p) {
+        if (toLowerCase(u) == toLowerCase(username)) {
+            in.close();
+            return true;
+        }
+    }
+    in.close();
     return false;
 }
 
@@ -439,33 +644,6 @@ void searchFood() {
     pressEnterToContinue();
 }
 
-/* ===================== MENUS ===================== */
-void foodMenu() {
-    int choice;
-    do {
-        system("cls");
-        cout << "\n--- FOOD & DRINK MENU ---\n";
-        cout << "1. Add Food/Drink\n";
-        cout << "2. Edit Food/Drink\n";
-        cout << "3. Delete Food/Drink\n";
-        cout << "4. Display Food/Drink\n";
-        cout << "5. Search Food/Drink\n";
-        cout << "0. Back\n";
-        cout << "\nChoice: ";
-        cin >> choice;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
-
-        switch(choice) {
-            case 1: addFood(); break;
-            case 2: editFood(); break;
-            case 3: deleteFood(); break;
-            case 4: displayFood(); break;  // Sorting menu display
-            case 5: searchFood(); break;
-        }
-    } while(choice != 0);
-}
-
-
 /* ===== SEARCH MENU ===== */
 void adminSearchMenu() {
     system("cls");
@@ -530,20 +708,6 @@ void adminSearchMenu() {
         if (!found) cout << "Food Not Found.\n";
         pressEnterToContinue();
     }
-}
-
-bool isAdminExist(const string& username) {
-    ifstream in("admin.txt");
-    char u[20], p[20];
-
-    while (in >> u >> p) {
-        if (toLowerCase(u) == toLowerCase(username)) {
-            in.close();
-            return true;
-        }
-    }
-    in.close();
-    return false;
 }
 
 /* ===================== ADMIN MANAGEMENT ===================== */
@@ -645,6 +809,32 @@ void deleteAdmin() {
     else cout << "Admin Not Found.\n";
 
     pressEnterToContinue();
+}
+
+/* ===================== MENUS ===================== */
+void foodMenu() {
+    int choice;
+    do {
+        system("cls");
+        cout << "\n--- FOOD & DRINK MENU ---\n";
+        cout << "1. Add Food/Drink\n";
+        cout << "2. Edit Food/Drink\n";
+        cout << "3. Delete Food/Drink\n";
+        cout << "4. Display Food/Drink\n";
+        cout << "5. Search Food/Drink\n";
+        cout << "0. Back\n";
+        cout << "\nChoice: ";
+        cin >> choice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
+
+        switch(choice) {
+            case 1: addFood(); break;
+            case 2: editFood(); break;
+            case 3: deleteFood(); break;
+            case 4: displayFood(); break;  // Sorting menu display
+            case 5: searchFood(); break;
+        }
+    } while(choice != 0);
 }
 
 void manageAdminMenu() {
@@ -818,221 +1008,6 @@ void adminMenu() {
         }
     } while(choice != 0);
 }
-
-// ============================
-// Linked List Structures
-// ============================
-struct menuItem
-{
-    int menuId;
-    string menuName;
-    float menuPrice;
-    menuItem* next;
-};
-
-menuItem* itemHead = NULL;
-
-struct orderItem
-{
-    int orderId;
-    int menuId;
-    string orderName;
-    double orderPrice;
-    int orderQuantity;
-    double total;
-    orderItem* next;
-};
-
-// Order list head (separate from menu head)
-orderItem* orderHead = NULL;
-
-
-// ============================
-// Forward Declarations
-// ============================
-class Menu;
-class Customer;
-class Admin;
-
-void customerMenu(Customer& customer);
-
-// Order functions
-void OrderMenu(Menu& menuItems, orderItem*& orderHead);
-void addOrderItem(Menu& menuItems, orderItem*& orderHead);
-void viewOrderSummary(orderItem* orderHead);
-void editOrderQuantity(orderItem* orderHead);
-void deleteOrderLine(orderItem*& orderHead);
-void confirmOrderToFile(orderItem*& orderHead);
-double calculateGrandTotal(orderItem* orderHead);
-menuItem* findMenuById(int id);
-int getNextOrderId(orderItem* head);
-
-// ============================
-// Base class
-// ============================
-class User
-{
-protected:
-    string id, username, password;
-
-public:
-    User(string id = "", string username = "", string password = "")
-        : id(id), username(username), password(password) {}
-
-    string getUsername() const { return username; }
-    string getId() const { return id; }
-
-    virtual void login() = 0;
-    virtual ~User() {}
-};
-
-// ============================
-// Menu Class
-// ============================
-class Menu
-{
-public:
-    Menu()
-    {
-        // clear old list if any
-        itemHead = NULL;
-
-        ifstream file("menu.txt");
-        if (!file.is_open())
-        {
-            cout << "No menu.txt found!\n";
-            return;
-        }
-
-        string line;
-        while (getline(file, line))
-        {
-            if (line.empty()) continue;
-
-            stringstream ss(line);
-            string idStr, name, priceStr;
-
-            getline(ss, idStr, ',');
-            getline(ss, name, ',');
-            getline(ss, priceStr, ',');
-
-            if (idStr.empty() || name.empty() || priceStr.empty()) continue;
-
-            int id = stoi(idStr);
-            float price = stof(priceStr);
-
-            menuItem* newItem = new menuItem;
-            newItem->menuId = id;
-            newItem->menuName = name;
-            newItem->menuPrice = price;
-            newItem->next = NULL;
-
-            if (itemHead == NULL)
-            {
-                itemHead = newItem;
-            }
-            else
-            {
-                menuItem* current = itemHead;
-                while (current->next != NULL)
-                    current = current->next;
-                current->next = newItem;
-            }
-        }
-
-        file.close();
-    }
-
-    void displayMenu()
-    {
-        cout << "=====================================\n";
-        cout << "                MENU                  \n";
-        cout << "=====================================\n";
-        cout << left << setw(6) << "ID"
-             << setw(22) << "Item Name"
-             << right << setw(12) << "Price (RM)\n";
-        cout << "-------------------------------------\n";
-
-        menuItem* current = itemHead;
-        while (current != NULL)
-        {
-            cout << left << setw(6) << current->menuId
-                 << setw(22) << current->menuName
-                 << right << setw(12) << fixed << setprecision(2) << current->menuPrice
-                 << "\n";
-            current = current->next;
-        }
-        cout << "-------------------------------------\n";
-    }
-};
-
-// ============================
-// Customer Class
-// ============================
-class Customer : public User
-{
-public:
-    Customer(string id = "", string username = "", string password = "")
-        : User(id, username, password) {}
-
-    void login() override
-    {
-        system("cls");
-        cout << "================ CUSTOMER LOGIN ================\n";
-        cout << "Username: ";
-        getline(cin, username);
-        cout << "Password: ";
-        getline(cin, password);
-
-        // Simple demo login (you can connect to file later)
-        if (username.empty() || password.empty())
-        {
-            cout << "Login failed. Press Enter...\n";
-            cin.get();
-            return;
-        }
-
-        id = "C001";
-        customerMenu(*this);
-    }
-};
-
-// ============================
-// Admin Class (DISABLED)
-// ============================
-class Admin : public User
-{
-public:
-    Admin(string id = "", string username = "", string password = "")
-        : User(id, username, password) {}
-
-    void login() override
-    {
-        /* ADMIN PORTAL DISABLED
-        system("cls");
-        cout << "================= ADMIN LOGIN =================\n";
-        cout << "Username: ";
-        getline(cin, username);
-        cout << "Password: ";
-        getline(cin, password);
-
-        if (username == "admin" && password == "admin")
-        {
-            cout << "Admin login success!\n";
-        }
-        else
-        {
-            cout << "Admin login failed!\n";
-        }
-
-        cout << "Press Enter to continue...";
-        cin.get();
-        */
-        cout << "\nAdmin login is currently disabled.\n";
-        cout << "Press Enter to return...";
-        cin.get();
-    }
-};
 
 // ============================
 // ORDER IMPLEMENTATION
@@ -1870,39 +1845,64 @@ class RegisterOrLogin
         }
 };
 
+// ============================
+// Main
+// ============================
 int main()
 {
-    initializeAdminFile();
-    loadFoodFromFile();
-
-    string choice;
-
-    do
+    while (true)
     {
         system("cls");
-        cout << "====================================================\n";
-        cout << "                   WELCOME TO KARABU              \n";
-        cout << "====================================================\n";
-        cout << "1. Customer Login\n";
-        cout << "2. Admin Login\n";
-        cout << "0. Exit\n";
-        cout << "Enter your choice: ";
-        getline(cin, choice);
+        cout << "==================================================\n";
+        cout << "      WELCOME TO KARABU FOOD ORDERING SYSTEM       \n";
+        cout << "==================================================\n";
+        cout << "                 1. CUSTOMER                      \n";
+        cout << "                 2. ADMIN                         \n";
+        cout << "                 0. EXIT                          \n";
+        cout << "==================================================\n";
+        cout << "Please enter your selection: ";
 
-        if (choice == "1")
+        int choice;
+        try
         {
-            Customer c;
-            c.login();
+            if (!(cin >> choice))
+                throw runtime_error("Invalid selection! Please enter a number.");
+
+            cin.ignore(); // clear newline
+
+            if (choice == 1)
+            {
+                // CHANGE: Instead of Customer.login(), 
+                // we call the RegisterOrLogin class menu
+                RegisterOrLogin customerPortal(1); // 1 indicates Customer type
+                customerPortal.RegisterOrLoginMenu();
+            }
+            else if (choice == 2)
+            {
+                initializeAdminFile();
+                adminLogin();
+                adminMenu();
+            }
+            else if (choice == 0)
+            {
+                cout << "Exiting system. Thank you for using KARABU!\n";
+                break;
+            }
+            else
+            {
+                cout << "Invalid selection. Press Enter...\n";
+                cin.get();
+            }
         }
-        else if (choice == "2")
+        catch (const exception& e)
         {
-            adminLogin();
-            adminMenu();
+            cout << "Error: " << e.what() << "\n";
+            cout << "Press Enter...\n";
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cin.get();
         }
+    }
 
-    } while (choice != "0");
-
-    system("cls");
-    cout << "Thank you for using KARABU. Goodbye!\n";
     return 0;
 }
