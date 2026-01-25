@@ -58,6 +58,15 @@ struct ReportNode {
     ReportNode* next;
 };
 
+struct Order {
+    int orderID;
+    int foodID;
+    string foodName;
+    double price;
+    int quantity;
+    double total;
+};
+
 /* ===================== GLOBAL HEADS ===================== */
 FoodNode* foodHead = NULL;
 ReportNode* reportHead = NULL;
@@ -862,10 +871,19 @@ void manageAdminMenu() {
         cin >> choice;
 
         switch(choice) {
-            case 1: addNewAdmin(); break;
-            case 2: deleteAdmin(); break;
-            case 3: displayAdmin(); pressEnterToContinue(); break;
-            case 4: searchAdmin(); break;
+            case 1: 
+                addNewAdmin(); 
+                break;
+            case 2: 
+                deleteAdmin(); 
+                break;
+            case 3: 
+                displayAdmin();
+                pressEnterToContinue(); 
+                break;
+            case 4: 
+                searchAdmin(); 
+                break;
         }
     } while(choice != 0);
 }
@@ -985,6 +1003,114 @@ void viewReceiptByOrder()
     pressEnterToContinue();
 }
 
+int loadOrders(Order orders[])
+{
+    ifstream file("orders.txt");
+    int count = 0;
+    char comma;
+
+    while (file >> orders[count].orderID >> comma
+                >> orders[count].foodID >> comma)
+    {
+        getline(file, orders[count].foodName, ',');
+
+        file >> orders[count].quantity >> comma
+             >> orders[count].price >> comma
+             >> orders[count].total;
+
+        count++;
+    }
+
+    file.close();
+    return count;
+}
+
+
+double calculateTotalSales()
+{
+    ifstream file("orders.txt");
+    string line;
+    double grandTotal = 0.0;
+
+    while (getline(file, line))
+    {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string temp;
+        double lineTotal;
+
+        for (int i = 0; i < 5; i++)
+            getline(ss, temp, ',');
+
+        ss >> lineTotal;
+
+        grandTotal += lineTotal;
+    }
+
+    file.close();
+    return grandTotal;
+}
+
+
+void sortByOrderID(Order orders[], int size)
+{
+    for (int i = 0; i < size - 1; i++)
+        for (int j = 0; j < size - i - 1; j++)
+            if (orders[j].orderID > orders[j + 1].orderID)
+                swap(orders[j], orders[j + 1]);
+}
+
+void sortByQuantity(Order orders[], int size)
+{
+    for (int i = 0; i < size - 1; i++)
+        for (int j = 0; j < size - i - 1; j++)
+            if (orders[j].quantity < orders[j + 1].quantity)
+                swap(orders[j], orders[j + 1]);
+}
+
+void adminViewSales()
+{
+    Order orders[100];
+    int size = loadOrders(orders);
+
+    if (size == 0)
+    {
+        cout << "No orders found.\n";
+        return;
+    }
+
+    int choice;
+    cout << "\nSort By:\n";
+    cout << "1. Order ID\n";
+    cout << "2. Quantity\n";
+    cout << "Choose: ";
+    cin >> choice;
+
+    if (choice == 1)
+        sortByOrderID(orders, size);
+    else if (choice == 2)
+        sortByQuantity(orders, size);
+
+    cout << "\nID   FoodID  Name        Qty   Total\n";
+    for (int i = 0; i < size; i++)
+    {
+        cout << orders[i].orderID << "    "
+             << orders[i].foodID << "     "
+             << orders[i].foodName << "    "
+             << orders[i].quantity << "    "
+             << fixed << setprecision(2)
+             << orders[i].total << endl;
+    }
+
+    cout << "\nTOTAL SALES: RM "
+         << fixed << setprecision(2)
+         << calculateTotalSales()<< endl;
+
+    system("pause");
+}
+
+
 void adminMenu() {
     loadFoodFromFile();
     int choice;
@@ -995,16 +1121,28 @@ void adminMenu() {
         cout << "2. Search Menu\n";
         cout << "3. Manage Admin\n";
         cout << "4. View Receipts\n";
+        cout << "5. View Sales Report\n";
         cout << "0. Logout\n";
         cout << "\nChoice: ";
         cin >> choice;
         cin.ignore();
 
         switch(choice) {
-            case 1: foodMenu(); break;
-            case 2: adminSearchMenu(); break;
-            case 3: manageAdminMenu(); break;
-            case 4: viewReceiptByOrder(); break;
+            case 1: 
+                foodMenu(); 
+                break;
+            case 2: 
+                adminSearchMenu(); 
+                break;
+            case 3: 
+                manageAdminMenu(); 
+                break;
+            case 4: 
+                viewReceiptByOrder(); 
+                break;
+            case 5: 
+                adminViewSales(); 
+                break;
         }
     } while(choice != 0);
 }
