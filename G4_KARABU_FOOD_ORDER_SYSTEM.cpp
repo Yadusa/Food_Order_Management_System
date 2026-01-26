@@ -539,7 +539,9 @@ void addFood() {
     saveFoodToMenu();
     cout << "Food Added Successfully!\n";
     cout << "Press Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
+
 }
 
 /* ===== EDIT FOOD ===== */
@@ -583,6 +585,9 @@ void editFood() {
     }
     cout << "Food Not Found.\n";
     cout << "Press Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
+
 }
 
 /* ===== DELETE FOOD ===== */
@@ -614,6 +619,7 @@ void deleteFood() {
 
     cout << "Food Deleted Successfully!\n";
     cout << "Press Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 
   }
@@ -755,17 +761,26 @@ void addNewAdmin() {
     out << newUser << " " << newPass << "\n";
     out.close();
     cout << "New Admin Added!\n";
-    cout << "Press Enter to continue...";;
+    cout << "Press Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
+
 }
 
 void displayAdmin() {
+    system("cls");
     ifstream in("admin.txt");
     char u[20], p[20];
+
     cout << "\n=== ADMIN LIST ===\n";
-    while (in >> u >> p) cout << "Username: " << u << " | Password: " << p << endl;
+    while (in >> u >> p)
+        cout << "Username: " << u << " | Password: " << p << endl;
+
     in.close();
-    cout << endl;
+
+    cout << "\nPress Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 
 void searchAdmin() {
@@ -792,7 +807,9 @@ void searchAdmin() {
 
     if (!found) cout << "Admin Not Found.\n";
     cout << "Press Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
+
 }
 
 void deleteAdmin() {
@@ -829,7 +846,9 @@ void deleteAdmin() {
     else cout << "Admin Not Found.\n";
 
     cout << "Press Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
+
 }
 
 /* ===================== MENUS ===================== */
