@@ -222,6 +222,9 @@ class Admin : public User
 public:
     Admin(string id = "", string username = "", string password = "")
         : User(id, username, password) {}
+        
+    ~Admin() {}
+    
 
 };
 
@@ -1263,7 +1266,6 @@ void searchMenu() {
         getline(ss, priceStr, ',');
 
         if (!idStr.empty() && !name.empty()) {
-            // FIX: Remove leading/trailing spaces from the name
             size_t first = name.find_first_not_of(' ');
             if (string::npos != first) {
                 size_t last = name.find_last_not_of(' ');
