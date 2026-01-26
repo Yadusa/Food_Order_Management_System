@@ -834,11 +834,21 @@ void foodMenu() {
         cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
 
         switch(choice) {
-            case 1: addFood(); break;
-            case 2: editFood(); break;
-            case 3: deleteFood(); break;
-            case 4: displayFood(); break;  // Sorting menu display
-            case 5: searchFood(); break;
+            case 1: 
+                addFood(); 
+                break;
+            case 2: 
+                editFood(); 
+                break;
+            case 3: 
+                deleteFood(); 
+                break;
+            case 4: 
+                displayFood(); 
+                break;  // Sorting menu display
+            case 5: 
+                searchFood(); 
+                break;
         }
     } while(choice != 0);
 }
@@ -868,10 +878,18 @@ void manageAdminMenu() {
         cin >> choice;
 
         switch(choice) {
-            case 1: addNewAdmin(); break;
-            case 2: deleteAdmin(); break;
-            case 3: displayAdmin(); break;
-            case 4: searchAdmin(); break;
+            case 1: 
+                addNewAdmin(); 
+                break;
+            case 2: 
+                deleteAdmin(); 
+                break;
+            case 3: 
+                displayAdmin(); 
+                break;
+            case 4: 
+                searchAdmin(); 
+                break;
         }
     } while(choice != 0);
 }
@@ -1060,9 +1078,15 @@ void adminFoodMenu() {
         cin.ignore();
 
         switch(choice) {
-            case 1: foodMenu(); break;
-            case 2: adminSearchMenu(); break;
-            case 3: viewReceiptByOrder(); break;
+            case 1: 
+                foodMenu(); 
+                break;
+            case 2: 
+                adminSearchMenu(); 
+                break;
+            case 3: 
+                viewReceiptByOrder(); 
+                break;
         }
     } while(choice != 0);
 }
@@ -1083,10 +1107,18 @@ void adminOption()
         cin.ignore();
         
         switch(choice) {
-            case 1: adminFoodMenu(); break;
-            case 2: manageAdminMenu(); break;
-            case 3: viewSummaryReport(); break;
-            case 0: cout << "Logging out...\n"; break;
+            case 1: 
+                adminFoodMenu(); 
+                break;
+            case 2: 
+                manageAdminMenu(); 
+                break;
+            case 3: 
+                viewSummaryReport(); 
+                break;
+            case 0: 
+                cout << "Logging out...\n"; 
+                break;
             default:
             	cout << "Invalid choice!\n";           
         }
