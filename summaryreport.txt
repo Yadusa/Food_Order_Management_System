@@ -1,0 +1,15 @@
+====================================================
+                   SALES SUMMARY REPORT             
+====================================================
+Order ID       Item Name           Total (RM)
+----------------------------------------------------
+1               Nasi Lemak         10.00
+3               Limau Panas        14.00
+4               Roti Canai         12.50
+5               Mee Kungfu         10.00
+----------------------------------------------------
+Total Transactions: 4
+Total Units Sold:   12
+GRAND TOTAL REVENUE: RM 46.50
+====================================================
+Report Generated successfully.
