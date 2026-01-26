@@ -58,15 +58,6 @@ struct ReportNode {
     ReportNode* next;
 };
 
-struct Order {
-    int orderID;
-    int foodID;
-    string foodName;
-    double price;
-    int quantity;
-    double total;
-};
-
 /* ===================== GLOBAL HEADS ===================== */
 FoodNode* foodHead = NULL;
 ReportNode* reportHead = NULL;
@@ -215,7 +206,6 @@ public:
         if (username.empty() || password.empty())
         {
             cout << "Login failed. Press Enter...\n";
-            cin.get();
             return;
         }
 
@@ -239,12 +229,6 @@ public:
 string toLowerCase(string s) {
     for (char &c : s) c = tolower(c);
     return s;
-}
-
-void pressEnterToContinue() {
-    cout << "\nPress ENTER to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
 }
 
 /* ===================== ADMIN FILE ===================== */
@@ -275,7 +259,7 @@ void adminLogin() {
 
         if (strcmp(username, "Admin") == 0 && strcmp(password, "12345") == 0) {
             cout << "Login Successful (Default Admin)!\n";
-            pressEnterToContinue();
+            cout << "Press Enter to continue...";
             return;
         }
 
@@ -291,11 +275,12 @@ void adminLogin() {
 
         if (found) {
             cout << "Login Successful!\n";
-            pressEnterToContinue();
+            cout << "Press Enter to continue...";
             return;
         } else {
             cout << "\nWrong username or password. Try again.\n";
-            pressEnterToContinue();
+            cout << "Press Enter to continue...";
+            cin.get();
         }
     }
 }
@@ -452,7 +437,8 @@ void displayFood() {
         delete del;
     }
 
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
+    cin.get();
 }
 
 /* ===== HELPER TO CHECK DUPLICATES ===== */
@@ -508,7 +494,8 @@ void addFood() {
 
         if (isFoodIDExist(newNode->data.foodID)) {
             cout << "Error: Food ID already exists! Please enter a different ID.\n";
-            continue;
+            cout << "Press Enter...";
+            cin.get();
         }
 
         cout << "Food Name (0 to go back): ";
@@ -545,7 +532,8 @@ void addFood() {
 
     saveFoodToMenu();
     cout << "Food Added Successfully!\n";
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
+    cin.get();
 }
 
 /* ===== EDIT FOOD ===== */
@@ -582,13 +570,13 @@ void editFood() {
 
             saveFoodToMenu();
             cout << "Food Updated Successfully!\n";
-            pressEnterToContinue();
+            cout << "Press Enter to continue...";
             return;
         }
         temp = temp->next;
     }
     cout << "Food Not Found.\n";
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
 }
 
 /* ===== DELETE FOOD ===== */
@@ -609,9 +597,8 @@ void deleteFood() {
 
     if (!temp) {
         cout << "Food Not Found.\n";
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
         return;
-    }
 
     if (!prev) foodHead = temp->next;
     else prev->next = temp->next;
@@ -620,11 +607,14 @@ void deleteFood() {
     saveFoodToMenu();
 
     cout << "Food Deleted Successfully!\n";
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
+    cin.get();
+
+  }
 }
 
 /* ===== SEARCH FOOD ===== */
-void searchFood() {
+void searchFood(){
     system("cls");
 
     string key;
@@ -650,7 +640,7 @@ void searchFood() {
     }
 
     if (!found) cout << "Food Not Found.\n";
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
 }
 
 /* ===== SEARCH MENU ===== */
@@ -659,7 +649,8 @@ void adminSearchMenu() {
 
     if (!foodHead) {
         cout << "No food records available.\n";
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
+        cin.get();
         return;
     }
 
@@ -688,13 +679,15 @@ void adminSearchMenu() {
                 cout << "ID: " << temp->data.foodID << endl;
                 cout << "Name: " << temp->data.name << endl;
                 cout << "Price: RM" << temp->data.price << endl;
-                pressEnterToContinue();
+                cout << "Press Enter...";
+                cin.get();
                 return;
             }
             temp = temp->next;
         }
         cout << "Food Not Found.\n";
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
+        cin.get();
     }
     else if (choice == 2) {
         string key;
@@ -715,7 +708,8 @@ void adminSearchMenu() {
             temp = temp->next;
         }
         if (!found) cout << "Food Not Found.\n";
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
+        cin.get();
     }
 }
 
@@ -746,7 +740,8 @@ void addNewAdmin() {
     out << newUser << " " << newPass << "\n";
     out.close();
     cout << "New Admin Added!\n";
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";;
+    cin.get();
 }
 
 void displayAdmin() {
@@ -781,7 +776,8 @@ void searchAdmin() {
     in.close();
 
     if (!found) cout << "Admin Not Found.\n";
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
+    cin.get();
 }
 
 void deleteAdmin() {
@@ -795,7 +791,7 @@ void deleteAdmin() {
 
     if (strcmp(delUser, "Admin") == 0) {
         cout << "Cannot delete default Admin!\n";
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
         return;
     }
 
@@ -817,7 +813,8 @@ void deleteAdmin() {
     if (found) cout << "Admin Deleted!\n";
     else cout << "Admin Not Found.\n";
 
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
+    cin.get();
 }
 
 /* ===================== MENUS ===================== */
@@ -854,7 +851,7 @@ void manageAdminMenu() {
     if (strcmp(masterPass, "0") == 0) return;
     if (strcmp(masterPass, "Admin123") != 0) {
         cout << "Access Denied!\n"; 
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
         return;
     }
 
@@ -871,19 +868,10 @@ void manageAdminMenu() {
         cin >> choice;
 
         switch(choice) {
-            case 1: 
-                addNewAdmin(); 
-                break;
-            case 2: 
-                deleteAdmin(); 
-                break;
-            case 3: 
-                displayAdmin();
-                pressEnterToContinue(); 
-                break;
-            case 4: 
-                searchAdmin(); 
-                break;
+            case 1: addNewAdmin(); break;
+            case 2: deleteAdmin(); break;
+            case 3: displayAdmin(); break;
+            case 4: searchAdmin(); break;
         }
     } while(choice != 0);
 }
@@ -892,12 +880,12 @@ void manageAdminMenu() {
 void viewReceiptByOrder()
 {
     system("cls");
-
     ifstream in("orders.txt");
     if (!in)
     {
         cout << "No orders.txt found!\n";
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
+        cin.get();
         return;
     }
 
@@ -908,11 +896,9 @@ void viewReceiptByOrder()
     while (getline(in, line))
     {
         if (line.empty()) continue;
-
         stringstream ss(line);
         string oid;
         getline(ss, oid, ',');
-
         if (orderIDs.find(oid) == string::npos)
         {
             if (!first) orderIDs += ", ";
@@ -925,35 +911,26 @@ void viewReceiptByOrder()
     {
         cout << "No receipts found.\n";
         in.close();
-        pressEnterToContinue();
+        cout << "Press Enter to continue...";
+        cin.get();
         return;
     }
 
     cout << "Available Receipts (Order IDs):\n";
     cout << orderIDs << "\n\n";
-
     cout << "Enter Order ID to view (0 to back): ";
     string selectedID;
     cin >> selectedID;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    if (selectedID == "0")
-    {
-        in.close();
-        return;
-    }
+    if (selectedID == "0") { in.close(); return; }
 
     in.clear();
     in.seekg(0);
-
     system("cls");
     cout << "==================== RECEIPT FOR ORDER ID: " << selectedID << " ====================\n";
-    cout << left << setw(8) << "OID"
-         << setw(8) << "MID"
-         << setw(22) << "Item"
-         << right << setw(6) << "Qty"
-         << setw(12) << "Price"
-         << setw(12) << "Total" << "\n";
+    cout << left << setw(8) << "OID" << setw(8) << "MID" << setw(22) << "Item"
+         << right << setw(6) << "Qty" << setw(12) << "Price" << setw(12) << "Total" << "\n";
     cout << "---------------------------------------------------------------\n";
 
     bool found = false;
@@ -962,7 +939,6 @@ void viewReceiptByOrder()
     while (getline(in, line))
     {
         if (line.empty()) continue;
-
         stringstream ss(line);
         string oid, mid, name, qty, price, total;
 
@@ -975,143 +951,101 @@ void viewReceiptByOrder()
 
         if (oid == selectedID)
         {
-            found = true;
-            grandTotal += stod(total);
+            try {
+                if(total.empty()) continue; 
+                double val = stod(total);
+                found = true;
+                grandTotal += val;
 
-            cout << left << setw(8) << oid
-                 << setw(8) << mid
-                 << setw(22) << name
-                 << right << setw(6) << qty
-                 << setw(12) << price
-                 << setw(12) << total << "\n";
+                cout << left << setw(8) << oid << setw(8) << mid << setw(22) << name
+                     << right << setw(6) << qty << setw(12) << price << setw(12) << total << "\n";
+            } catch (...) { continue; } // Skips lines that cause stod errors
         }
     }
 
-    if (!found)
-    {
-        cout << "\nReceipt not found for Order ID: " << selectedID << "\n";
-    }
-    else
-    {
+    if (!found) cout << "\nReceipt not found or data corrupted for Order ID: " << selectedID << "\n";
+    else {
         cout << "---------------------------------------------------------------\n";
         cout << "Grand Total: RM " << fixed << setprecision(2) << grandTotal << "\n";
     }
-
     cout << "===============================================================\n";
-
     in.close();
-    pressEnterToContinue();
+    cout << "Press Enter to continue...";
+    cin.get();
 }
 
-int loadOrders(Order orders[])
-{
-    ifstream file("orders.txt");
-    int count = 0;
-    char comma;
-
-    while (file >> orders[count].orderID >> comma
-                >> orders[count].foodID >> comma)
-    {
-        getline(file, orders[count].foodName, ',');
-
-        file >> orders[count].quantity >> comma
-             >> orders[count].price >> comma
-             >> orders[count].total;
-
-        count++;
-    }
-
-    file.close();
-    return count;
-}
-
-
-double calculateTotalSales()
-{
-    ifstream file("orders.txt");
-    string line;
-    double grandTotal = 0.0;
-
-    while (getline(file, line))
-    {
-        if (line.empty()) continue;
-
-        stringstream ss(line);
-        string temp;
-        double lineTotal;
-
-        for (int i = 0; i < 5; i++)
-            getline(ss, temp, ',');
-
-        ss >> lineTotal;
-
-        grandTotal += lineTotal;
-    }
-
-    file.close();
-    return grandTotal;
-}
-
-
-void sortByOrderID(Order orders[], int size)
-{
-    for (int i = 0; i < size - 1; i++)
-        for (int j = 0; j < size - i - 1; j++)
-            if (orders[j].orderID > orders[j + 1].orderID)
-                swap(orders[j], orders[j + 1]);
-}
-
-void sortByQuantity(Order orders[], int size)
-{
-    for (int i = 0; i < size - 1; i++)
-        for (int j = 0; j < size - i - 1; j++)
-            if (orders[j].quantity < orders[j + 1].quantity)
-                swap(orders[j], orders[j + 1]);
-}
-
-void adminViewSales()
-{
-    Order orders[100];
-    int size = loadOrders(orders);
-
-    if (size == 0)
-    {
-        cout << "No orders found.\n";
+void viewSummaryReport() {
+    ifstream inFile("orders.txt");
+    if (!inFile) {
+        cout << "Error: No order history (orders.txt) found to generate report.\n";
+        cout << "Press Enter to continue...";
+        cin.get();
         return;
     }
 
-    int choice;
-    cout << "\nSort By:\n";
-    cout << "1. Order ID\n";
-    cout << "2. Quantity\n";
-    cout << "Choose: ";
-    cin >> choice;
+    double grandTotal = 0;
+    int totalItems = 0;
+    int transactionCount = 0;
 
-    if (choice == 1)
-        sortByOrderID(orders, size);
-    else if (choice == 2)
-        sortByQuantity(orders, size);
+    ofstream outFile("summaryreport.txt");
+    
+    outFile << "====================================================\n";
+    outFile << "                   SALES SUMMARY REPORT             \n";
+    outFile << "====================================================\n";
+    outFile << left << setw(15) << "Order ID" << setw(20) << "Item Name" << "Total (RM)\n";
+    outFile << "----------------------------------------------------\n";
 
-    cout << "\nID   FoodID  Name        Qty   Total\n";
-    for (int i = 0; i < size; i++)
-    {
-        cout << orders[i].orderID << "    "
-             << orders[i].foodID << "     "
-             << orders[i].foodName << "    "
-             << orders[i].quantity << "    "
-             << fixed << setprecision(2)
-             << orders[i].total << endl;
+    string line;
+    while (getline(inFile, line)) {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string oID, mID, name, qty, price, total;
+
+        // Parsing CSV format: orderID,menuID,name,qty,price,total
+        // Note: Your file format in confirmedOrderToFile is: ID, MID, Name, Qty, Price, Total
+        if (!getline(ss, oID, ',')) continue;
+        if (!getline(ss, mID, ',')) continue;
+        if (!getline(ss, name, ',')) continue;
+        if (!getline(ss, qty, ',')) continue;
+        if (!getline(ss, price, ',')) continue;
+        if (!getline(ss, total, ',')) continue;
+
+        try {
+            // Check if strings are not empty before converting
+            if (total.empty() || qty.empty()) continue;
+
+            double lineTotal = stod(total);
+            int lineQty = stoi(qty);
+
+            outFile << left << setw(15) << oID 
+                    << setw(20) << name 
+                    << fixed << setprecision(2) << lineTotal << "\n";
+
+            grandTotal += lineTotal;
+            totalItems += lineQty;
+            transactionCount++;
+        } catch (...) {
+            // Skips lines that have non-numeric data in price/qty fields
+            continue; 
+        }
     }
 
-    cout << "\nTOTAL SALES: RM "
-         << fixed << setprecision(2)
-         << calculateTotalSales()<< endl;
+    outFile << "----------------------------------------------------\n";
+    outFile << "Total Transactions: " << transactionCount << "\n";
+    outFile << "Total Units Sold:   " << totalItems << "\n";
+    outFile << "GRAND TOTAL REVENUE: RM " << fixed << setprecision(2) << grandTotal << "\n";
+    outFile << "====================================================\n";
+    outFile << "Report Generated successfully.\n";
 
-    system("pause");
+    inFile.close();
+    outFile.close();
+
+    cout << "The Summory Report has been updated successfully!";
+    cout << "Press Enter to continue...";
+    cin.get();
 }
-
-
-void adminMenu() {
+void adminFoodMenu() {
     loadFoodFromFile();
     int choice;
     do {
@@ -1119,33 +1053,49 @@ void adminMenu() {
         cout << "\n===== ADMIN MENU =====\n";
         cout << "1. Food & Drink\n";
         cout << "2. Search Menu\n";
-        cout << "3. Manage Admin\n";
-        cout << "4. View Receipts\n";
-        cout << "5. View Sales Report\n";
-        cout << "0. Logout\n";
+        cout << "3. View Receipts\n";
+        cout << "0. Back\n";
         cout << "\nChoice: ";
         cin >> choice;
         cin.ignore();
 
         switch(choice) {
-            case 1: 
-                foodMenu(); 
-                break;
-            case 2: 
-                adminSearchMenu(); 
-                break;
-            case 3: 
-                manageAdminMenu(); 
-                break;
-            case 4: 
-                viewReceiptByOrder(); 
-                break;
-            case 5: 
-                adminViewSales(); 
-                break;
+            case 1: foodMenu(); break;
+            case 2: adminSearchMenu(); break;
+            case 3: viewReceiptByOrder(); break;
         }
     } while(choice != 0);
 }
+
+void adminOption()
+{
+	int choice;
+	do 
+	{
+		system("cls");
+		cout << "\n===== ADMIN DASHBOARD =====\n";
+		cout << "1.Manage Food Menu\n";
+        cout << "2. Manage Admin\n";
+        cout << "3.Generate Summary Report\n";
+        cout << "0. Logout\n";
+        cout << "\nChoice: ";
+        cin >> choice;
+        cin.ignore();
+        
+        switch(choice) {
+            case 1: adminFoodMenu(); break;
+            case 2: manageAdminMenu(); break;
+            case 3: viewSummaryReport(); break;
+            case 0: cout << "Logging out...\n"; break;
+            default:
+            	cout << "Invalid choice!\n";           
+        }
+    } while(choice != 0);
+	
+		
+}
+
+
 
 // ============================
 // ORDER IMPLEMENTATION
@@ -1453,7 +1403,7 @@ void addOrderItem(Menu& menuItems, orderItem*& head)
     }
 
     cout << "Added: " << node->orderName << " x" << qty << "\n";
-    cout << "Press Enter...";
+    cout << "Press Enter to continue...";
     cin.get();
 }
 
@@ -1852,43 +1802,6 @@ class RegisterOrLogin
                             }
                         }
                     }
-                    /* ADMIN LOGIC COMMENTED OUT
-                    else
-                    {
-                        string level, status;
-                        size_t p1 = line.find(',');
-                        size_t p2 = line.find(',', p1 + 1);
-                        size_t p3 = line.find(',', p2 + 1);
-                        size_t p4 = line.find(',', p3 + 1);
-
-                        if(p1 != string::npos && p2 != string::npos && p3 != string::npos && p4 != string::npos)
-                        {
-                            id = line.substr(0, p1);
-                            fileUsername = line.substr(p1 + 1, p2 - p1 - 1);
-                            filePassword = line.substr(p2 + 1, p3 - p2 - 1);
-                            level = line.substr(p3 + 1, p4 - p3 - 1);
-                            status = line.substr(p4 + 1);
-
-                            string lowerFileUsername = fileUsername;
-                            for(char& c : lowerFileUsername)
-                            {
-                                c = tolower(c);
-                            }
-                            if(username == lowerFileUsername && password == filePassword)
-                            {
-                                found = true;
-                                if(status == "active")
-                                {
-                                    // Staff admin(id, fileUsername, filePassword, stoi(level), status);
-                                    // file.close();
-                                    // cout << "Login successful!" << endl;
-                                    // adminMenu(admin);
-                                    // return;
-                                }
-                            }
-                        }
-                    }
-                    */
                 }
                 file.close();
                 if(!found)
@@ -2019,7 +1932,7 @@ int main()
             {
                 initializeAdminFile();
                 adminLogin();
-                adminMenu();
+                adminOption();
             }
             else if (choice == 0)
             {
