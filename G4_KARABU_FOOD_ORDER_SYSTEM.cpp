@@ -222,12 +222,13 @@ class Admin : public User
 public:
     Admin(string id = "", string username = "", string password = "")
         : User(id, username, password) {}
-        
-    ~Admin() {}
-    
 
     friend void adminOption(Admin& admin);
+    friend void manageAdminMenu(Admin& admin);
+    friend void viewSummaryReport(Admin& admin);
+    friend void viewReceiptByOrder(Admin& admin);
 };
+
 
 
 /* ===================== HELPER FUNCTIONS ===================== */
