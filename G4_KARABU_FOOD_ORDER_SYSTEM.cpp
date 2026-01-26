@@ -223,7 +223,9 @@ public:
     Admin(string id = "", string username = "", string password = "")
         : User(id, username, password) {}
 
+    friend void adminOption(Admin& admin);
 };
+
 
 /* ===================== HELPER FUNCTIONS ===================== */
 string toLowerCase(string s) {
@@ -656,23 +658,23 @@ void adminSearchMenu() {
 
     cout << "--- SEARCH MENU ---\n";
     cout << "1. Search by ID\n";
-    cout << "2. Search by Name\n";
+    cout << "2. Search by Name (Keyword)\n";
     cout << "0. Back\n";
     cout << "Choice: ";
 
     int choice;
     cin >> choice;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
-    if (choice == 0) return;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    FoodNode* temp = foodHead;
+    if (choice == 0) return;
 
     if (choice == 1) {
         int id;
         cout << "Enter Food ID: ";
         cin >> id;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // FULL CLEAR
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
+        FoodNode* temp = foodHead;
         while (temp) {
             if (temp->data.foodID == id) {
                 cout << "\nFood Found:\n";
@@ -685,30 +687,39 @@ void adminSearchMenu() {
             }
             temp = temp->next;
         }
+
         cout << "Food Not Found.\n";
         cout << "Press Enter to continue...";
         cin.get();
     }
     else if (choice == 2) {
         string key;
-        cout << "Enter Food Name: ";
-        getline(cin, key); // now works on first try
+        cout << "Enter Food Name keyword: ";
+        getline(cin, key);
         key = toLowerCase(key);
 
         bool found = false;
+        FoodNode* temp = foodHead;
+
+        cout << "\n=== SEARCH RESULTS ===\n";
+
         while (temp) {
-            if (toLowerCase(temp->data.name) == key) {
-                cout << "\nFood Found:\n";
-                cout << "ID: " << temp->data.foodID << endl;
-                cout << "Name: " << temp->data.name << endl;
-                cout << "Price: RM" << temp->data.price << endl;
+            string foodName = toLowerCase(temp->data.name);
+
+            if (foodName.find(key) != string::npos) {
+                cout << "ID: " << temp->data.foodID
+                     << " | Name: " << temp->data.name
+                     << " | Price: RM" << temp->data.price << endl;
                 found = true;
-                break;
             }
             temp = temp->next;
         }
-        if (!found) cout << "Food Not Found.\n";
-        cout << "Press Enter to continue...";
+
+        if (!found) {
+            cout << "No food matches your keyword.\n";
+        }
+
+        cout << "\nPress Enter to continue...";
         cin.get();
     }
 }
